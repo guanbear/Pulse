@@ -352,8 +352,8 @@ struct RailEntry: Identifiable, Equatable {
     /// together. Carried on the entry like the tint, because the item is built
     /// from this and doesn't otherwise see the settings.
     var showsRemaining: Bool = false
-    /// Public Codex reset news, shown as a short outer arc without replacing
-    /// or obscuring any of the usage arcs, figures, or provider mark.
+    /// Public Codex reset news, shown as a quiet unread dot without replacing
+    /// any of the usage arcs, figures, or provider mark.
     var showsCodexResetAnnouncement = false
 
     var id: String { slot.id }
@@ -623,23 +623,13 @@ private struct UsageDockItem: View {
             secondFraction: entry.second?.usedFraction,
             secondIsSpent: UsageTint.isSpent(entry.second)
         )
-        .overlay {
+        .overlay(alignment: .topTrailing) {
             if entry.showsCodexResetAnnouncement {
                 Circle()
-                    .trim(from: 0.86, to: 0.95)
-                    .stroke(
-                        Color.orange,
-                        style: StrokeStyle(
-                            lineWidth: 2 * PanelMetrics.scale,
-                            lineCap: .round)
-                    )
-                    // Outside both usage and optional clock arcs. The rail is
-                    // already wide enough at all three panel sizes, so this
-                    // adds no measured size and cannot move a ring.
-                    .frame(
-                        width: DockLayout.ringDiameter + 18 * PanelMetrics.scale,
-                        height: DockLayout.ringDiameter + 18 * PanelMetrics.scale)
-                    .rotationEffect(.degrees(-90))
+                    .fill(.orange)
+                    .frame(width: 7 * PanelMetrics.scale, height: 7 * PanelMetrics.scale)
+                    .overlay { Circle().stroke(.black.opacity(0.8), lineWidth: 1) }
+                    .offset(x: 1 * PanelMetrics.scale, y: -1 * PanelMetrics.scale)
                     .accessibilityHidden(true)
             }
         }
