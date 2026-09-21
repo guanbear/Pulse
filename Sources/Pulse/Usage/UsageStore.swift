@@ -453,6 +453,9 @@ final class UsageStore {
             async let codexUsage = wanted.contains(.codex)
                 ? await codex.fetch(source: codexSource)
                 : ProviderUsage.unavailable(.codex, reason: .loading)
+            async let kiroUsage = wanted.contains(.kiro)
+                ? await kiro.fetch()
+                : ProviderUsage.unavailable(.kiro, reason: .loading)
             async let claudeUsage = wanted.contains(.claudeCode)
                 ? await claudeCode.fetch(source: claudeSource)
                 : ProviderUsage.unavailable(.claudeCode, reason: .loading)
@@ -508,8 +511,8 @@ final class UsageStore {
                 ? await devin.fetch(source: devinSource)
                 : ProviderUsage.unavailable(.devin, reason: .loading)
 
-            let (rawCodex, rawClaude, rawAntigravity, rawOpenCode) =
-                await (codexUsage, claudeUsage, antigravityUsage, openCodeUsage)
+            let (rawCodex, rawKiro, rawClaude, rawAntigravity, rawOpenCode) =
+                await (codexUsage, kiroUsage, claudeUsage, antigravityUsage, openCodeUsage)
             let (rawKimi, rawCursor, rawOllama) = await (kimiUsage, cursorUsage, ollamaUsage)
             let (rawZai, rawGLM) = await (zaiUsage, glmUsage)
             let (rawMiniMax, rawMiniMaxCN) = await (minimaxUsage, minimaxCNUsage)
@@ -539,6 +542,7 @@ final class UsageStore {
             var results: [BatchResult] = []
             for (provider, raw) in [
                 (Provider.codex, rawCodex),
+                (.kiro, rawKiro),
                 (.claudeCode, rawClaude),
                 (.antigravity, rawAntigravity),
                 (.openCodeGo, rawOpenCode),
