@@ -103,11 +103,11 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
         case .openCodeGo: "opencode"
         case .kimiCode: "kimi"
         case .ollamaCloud: "ollama"
-        case .zai: "zai"
-        // BigModel's boxed Z, not the mark of 智谱清言: this row reads a
-        // Coding Plan subscription from the BigModel storefront. The box also
-        // keeps the mainland service distinct from z.ai's unboxed Z at rail size.
-        case .glmCoding: "bigmodel"
+        // One mark for both storefronts, the way MiniMax's two rows share
+        // theirs. The rail stops distinguishing them: the ring names do it,
+        // and those are only read on the card. Deliberate — a rail carrying
+        // both rows shows one mark twice.
+        case .zai, .glmCoding: "zai"
         // One mark for both, since there is only one brand. Two accounts of one
         // provider already share a mark on the rail; this is the same case.
         case .minimax, .minimaxCN: "minimax"

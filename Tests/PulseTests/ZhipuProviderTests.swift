@@ -1,14 +1,15 @@
 import Testing
 @testable import Pulse
 
-/// The mainland row reads a GLM Coding Plan subscription from
-/// `open.bigmodel.cn`. 智谱清言 is a separate consumer product that does not
-/// own that quota, and the row wore its mark until #45.
+/// The two GLM rows are one company's international and mainland storefronts,
+/// and they share a mark rather than each wearing a product's own — see
+/// [zai.md](../../Docs/providers/zai.md) for what that costs on the rail.
 ///
 /// That the mark renders rather than merely loading is `ProviderMarkTests`.
 struct ZhipuProviderTests {
     @Test
-    func codingPlanUsesBigModelMark() {
-        #expect(Provider.glmCoding.iconResource == "bigmodel")
+    func bothStorefrontsShareTheZaiMark() {
+        #expect(Provider.glmCoding.iconResource == "zai")
+        #expect(Provider.zai.iconResource == Provider.glmCoding.iconResource)
     }
 }

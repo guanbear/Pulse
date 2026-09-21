@@ -51,8 +51,3 @@ The Claude, OpenAI, Antigravity, Cursor, OpenCode, Kimi, Ollama, Z.ai, Zhipu,
 MiniMax, GitHub, Grok and xAI, Volcengine, and Devin names and marks remain
 the property of their respective owners. Their inclusion identifies compatible
 services and does not imply endorsement.
-
-`Sources/Pulse/Resources/bigmodel.svg` is a monochrome adaptation of the
-official BigModel storefront favicon at
-`https://open.bigmodel.cn/static/images/favicon.png`. The BigModel name and
-mark remain the property of Zhipu AI.
