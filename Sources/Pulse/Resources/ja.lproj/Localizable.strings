@@ -627,7 +627,7 @@
 
 /* Codex reset announcements */
 "Reset announcements" = "リセットのお知らせ";
-"Show public Codex reset and reset-credit news below the usage card." = "公開されている Codex の制限リセットとリセットクレジット情報を使用量カードの下に表示します。";
+"Show public Codex reset and reset-credit news in usage details." = "公開されている Codex の制限リセットとリセットクレジット情報を使用量の詳細に表示します。";
 "Reset credit" = "リセットクレジット";
 "Limit reset" = "上限リセット";
 "Confirmed" = "確認済み";

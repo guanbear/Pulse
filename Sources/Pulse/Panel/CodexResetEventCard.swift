@@ -1,19 +1,17 @@
 import SwiftUI
 
 enum ResetEventCardLayout {
-    /// Matches the usage card's body. The usage card is wider only by its
-    /// pointer, which the stacked event card pads around at the rail side.
-    static var width: CGFloat { DetailCardLayout.width }
-    static var gap: CGFloat { 12 * PanelMetrics.scale }
+    /// The section has no outer padding or surface of its own; both belong to
+    /// the usage bubble that contains it. This is only the conservative space
+    /// the fixed AppKit panel reserves for its variable text.
     static var maximumHeight: CGFloat { 250 * PanelMetrics.scale }
 }
 
-/// A second, adjacent card for public reset news. It never takes the place of
-/// `UsageDetailCard`, because an announcement and this account's live quota
-/// answer different questions.
-struct CodexResetEventCard: View {
+/// Public reset news inside the Codex usage bubble. The divider supplied by
+/// `UsageDetailCard` keeps this third-party announcement distinct from the
+/// provider-reported quota without making it look like a detached popover.
+struct CodexResetEventSection: View {
     let event: CodexResetEvent
-    var usesGlass = false
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -59,17 +57,6 @@ struct CodexResetEventCard: View {
                 .font(.system(size: 10.5 * PanelMetrics.scale, weight: .medium))
                 .foregroundStyle(.secondary)
             }
-            .padding(DetailCardLayout.padding)
-            .frame(width: ResetEventCardLayout.width, alignment: .leading)
-            .background(
-                PanelSurface(
-                    shape: RoundedRectangle(
-                        cornerRadius: DetailCardLayout.cornerRadius,
-                        style: .continuous
-                    ),
-                    usesGlass: usesGlass
-                )
-            )
             .accessibilityElement(children: .combine)
             .accessibilityLabel(String.localized("Codex reset announcement"))
         }
