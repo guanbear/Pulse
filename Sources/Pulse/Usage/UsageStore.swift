@@ -34,6 +34,7 @@ final class UsageStore {
     private let alerts: UsageAlerts?
     private let appServer = CodexAppServer()
     private let codex: CodexUsageService
+    private let kiro = KiroUsageService()
     private let claudeCode = ClaudeCodeUsageService()
     private let antigravity = AntigravityUsageService()
     private let grok = GrokUsageService()
@@ -446,7 +447,7 @@ final class UsageStore {
         // blind to any of them.
         let extras = settings.shownAccounts.filter { !$0.isPrimary }
 
-        Task { [codex, claudeCode, antigravity, cursor, grok, grokBot] in
+        Task { [codex, kiro, claudeCode, antigravity, cursor, grok, grokBot] in
             // Independent, so they run side by side rather than one waiting on
             // another's round trip.
             async let codexUsage = wanted.contains(.codex)
@@ -675,6 +676,8 @@ final class UsageStore {
             switch provider {
             case .codex:
                 raw = await codex.fetch(source: source)
+            case .kiro:
+                raw = await kiro.fetch()
             case .claudeCode:
                 raw = await claudeCode.fetch(source: source)
             case .antigravity:
@@ -777,7 +780,7 @@ final class UsageStore {
         case .grok: await grok.fetch(account: account, token: credentials.accessToken)
         case .grokBot: await grokBot.fetch(account: account, token: credentials.accessToken)
         // Nothing else can be signed in to, so nothing else gets here.
-        case .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
+        case .kiro, .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
              .zai, .glmCoding, .minimax, .minimaxCN, .copilot, .volcengine,
              .commandCode, .deepSeek, .devin, .xiaomiMiMo:
             .unavailable(account, reason: .loading)
