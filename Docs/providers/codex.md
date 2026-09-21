@@ -64,7 +64,7 @@ The feed is checked immediately at launch and no more than once every 15 minutes
 
 An announced scheduled event is shown through its window plus a 24-hour confirmation grace. An unscheduled announcement expires after 48 hours. A confirmed event remains visible for 24 hours. These bounds keep an old, never-confirmed post from becoming a permanent status badge.
 
-On the rail, current news is a small SF Symbol badge on Codex's existing ring. Hover still opens the ordinary usage card; the reset event is a separate adjacent card, including attribution and the original-post excerpt. Its status is deliberately “announced” or “confirmed”, never “received”.
+On the rail, current news is a short orange arc outside Codex's existing ring. It scales with the Small, Standard and Large panel sizes without adding another rail slot or covering the provider mark. Hover still opens the ordinary usage card; the reset event is a separate card below it, including attribution and the original-post excerpt. Its status is deliberately “announced” or “confirmed”, never “received”. The whole auxiliary feed can be disabled in Codex's Panel settings; disabling it clears the card and arc and stops polling the feed.
 
 ## Ledger
 

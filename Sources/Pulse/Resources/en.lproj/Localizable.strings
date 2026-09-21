@@ -619,6 +619,8 @@
 "Uses only the API key you enter in Settings. No Keychain prompt." = "Uses only the API key you enter in Settings. No Keychain prompt.";
 
 /* Codex reset announcements */
+"Reset announcements" = "Reset announcements";
+"Show public Codex reset and reset-credit news below the usage card." = "Show public Codex reset and reset-credit news below the usage card.";
 "Reset credit" = "Reset credit";
 "Limit reset" = "Limit reset";
 "Confirmed" = "Confirmed";

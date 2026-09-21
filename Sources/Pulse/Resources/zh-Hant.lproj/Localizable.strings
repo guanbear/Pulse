@@ -619,6 +619,8 @@
 "Uses only the API key you enter in Settings. No Keychain prompt." = "只使用你在設定中輸入的 API 金鑰。不會出現鑰匙圈提示。";
 
 /* Codex 重置公告 */
+"Reset announcements" = "重置公告";
+"Show public Codex reset and reset-credit news below the usage card." = "在用量卡下方顯示公開的 Codex 額度重置與重置卡消息。";
 "Reset credit" = "重置卡";
 "Limit reset" = "額度重置";
 "Confirmed" = "已確認";

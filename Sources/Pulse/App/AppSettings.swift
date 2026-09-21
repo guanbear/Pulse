@@ -596,6 +596,19 @@ final class AppSettings {
         }
     }
 
+    /// Whether public Codex reset and reset-credit announcements appear in
+    /// the panel. On by default because it is passive, read-only context; the
+    /// Codex settings pane offers an explicit opt-out for readers who want the
+    /// rail to contain usage and nothing else.
+    var showsCodexResetAnnouncements: Bool {
+        didSet {
+            guard showsCodexResetAnnouncements != oldValue else { return }
+            UserDefaults.standard.set(
+                showsCodexResetAnnouncements,
+                forKey: Key.showsCodexResetAnnouncements)
+        }
+    }
+
     /// How full a limit has to be before the panel draws it red.
     ///
     /// A setting rather than a constant because "getting tight" is a judgement
@@ -911,6 +924,7 @@ final class AppSettings {
         usesRoundEnds: Bool = false,
         showsWindowClock: Bool = false,
         showsRemaining: Bool = false,
+        showsCodexResetAnnouncements: Bool = true,
         warningThreshold: WarningThreshold = .default,
         dockShowsAlertColor: Bool = true,
         showsForecast: Bool = false,
@@ -956,6 +970,7 @@ final class AppSettings {
         self.usesRoundEnds = usesRoundEnds
         self.showsWindowClock = showsWindowClock
         self.showsRemaining = showsRemaining
+        self.showsCodexResetAnnouncements = showsCodexResetAnnouncements
         self.warningThreshold = warningThreshold
         self.dockShowsAlertColor = dockShowsAlertColor
         self.showsForecast = showsForecast
@@ -1220,6 +1235,7 @@ final class AppSettings {
             usesRoundEnds: defaults.object(forKey: Key.usesRoundEnds) as? Bool ?? false,
             showsWindowClock: defaults.object(forKey: Key.showsWindowClock) as? Bool ?? false,
             showsRemaining: defaults.object(forKey: Key.showsRemaining) as? Bool ?? false,
+            showsCodexResetAnnouncements: defaults.object(forKey: Key.showsCodexResetAnnouncements) as? Bool ?? true,
             warningThreshold: (defaults.object(forKey: Key.warningThreshold) as? Int)
                 .flatMap(WarningThreshold.init(rawValue:)) ?? .default,
             dockShowsAlertColor: defaults.object(forKey: Key.dockShowsAlertColor) as? Bool ?? true,
@@ -1342,6 +1358,7 @@ final class AppSettings {
         static let botShapes = "settings.botShapes"
         static let botColours = "settings.botColours"
         static let showsRemaining = "settings.showsRemaining"
+        static let showsCodexResetAnnouncements = "settings.showsCodexResetAnnouncements"
         static let warningThreshold = "settings.warningThreshold"
         static let dockShowsAlertColor = "settings.dockShowsAlertColor"
         static let showsForecast = "settings.showsForecast"

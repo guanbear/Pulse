@@ -317,7 +317,9 @@ struct FloatingUsagePanelView: View {
             figure: figure,
             second: settings.showsSecondRing ? usage.secondWindow(preferring: pinned) : nil,
             showsRemaining: settings.showsRemaining,
-            resetBadge: account.provider == .codex ? store.codexResetEvent?.kind : nil
+            showsCodexResetAnnouncement: account.provider == .codex
+                && settings.showsCodexResetAnnouncements
+                && store.codexResetEvent != nil
         )
     }
 
@@ -383,7 +385,9 @@ struct FloatingUsagePanelView: View {
             pointerCenter: pointerCentre(for: index)
         )
 
-        if usage.provider == .codex, let event = store.codexResetEvent {
+        if usage.provider == .codex,
+           settings.showsCodexResetAnnouncements,
+           let event = store.codexResetEvent {
             VStack(alignment: .leading, spacing: ResetEventCardLayout.gap) {
                 usageCard
                 resetEventCard(event)

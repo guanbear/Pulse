@@ -378,7 +378,8 @@ final class UsageStore {
         codexResetTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
-                if self.settings.isEnabled(AccountKey(.codex)) {
+                if self.settings.isEnabled(AccountKey(.codex)),
+                   self.settings.showsCodexResetAnnouncements {
                     self.codexResetEvent = await self.codexResetFeed.current()
                 } else {
                     self.codexResetEvent = nil
@@ -389,7 +390,8 @@ final class UsageStore {
     }
 
     private func refreshCodexResetFeed(force: Bool) {
-        guard settings.isEnabled(AccountKey(.codex)) else {
+        guard settings.isEnabled(AccountKey(.codex)),
+              settings.showsCodexResetAnnouncements else {
             codexResetEvent = nil
             return
         }
@@ -398,6 +400,13 @@ final class UsageStore {
             guard !Task.isCancelled else { return }
             self?.codexResetEvent = event
         }
+    }
+
+    /// Applies the Codex announcement switch without waking every provider.
+    /// This feed has its own cadence, so a presentation choice must not spend
+    /// a quota request on unrelated accounts.
+    func codexResetAnnouncementsChanged() {
+        refreshCodexResetFeed(force: settings.showsCodexResetAnnouncements)
     }
 
     /// Longer than any pass can honestly take: every request in one carries a

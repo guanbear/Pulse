@@ -1301,6 +1301,25 @@ struct SettingsView: View {
                     .disabled(settings.isEnabled(account) && settings.enabledAccounts.count == 1)
                 }
 
+                if provider == .codex {
+                    SettingsRowDivider()
+
+                    SettingsRow(
+                        String.localized("Reset announcements"),
+                        subtitle: String.localized("Show public Codex reset and reset-credit news below the usage card.")
+                    ) {
+                        Toggle("", isOn: Binding(
+                            get: { settings.showsCodexResetAnnouncements },
+                            set: { enabled in
+                                settings.showsCodexResetAnnouncements = enabled
+                                store.codexResetAnnouncementsChanged()
+                            }
+                        ))
+                        .labelsHidden()
+                        .toggleStyle(.switch)
+                    }
+                }
+
                 SettingsRowDivider()
 
                 ringWindowRow(for: account)

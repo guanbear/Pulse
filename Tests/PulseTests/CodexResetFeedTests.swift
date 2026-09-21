@@ -4,6 +4,12 @@ import Testing
 
 struct CodexResetFeedTests {
     @Test @MainActor
+    func announcementsAreOnByDefaultAndCanBeDisabled() {
+        #expect(AppSettings().showsCodexResetAnnouncements)
+        #expect(!AppSettings(showsCodexResetAnnouncements: false).showsCodexResetAnnouncements)
+    }
+
+    @Test @MainActor
     func panelAlwaysBudgetsBothCards() {
         let flyoutHeight = DetailCardLayout.maximumHeight
             + ResetEventCardLayout.gap
