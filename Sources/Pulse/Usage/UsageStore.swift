@@ -18,6 +18,9 @@ final class UsageStore {
     /// in to more than once, and a reading belongs to the account it came from.
     private(set) var usage: [String: ProviderUsage] = [:]
     private(set) var diagnostics: [String: ConnectionDiagnostic] = [:]
+    /// Current public Codex reset news. It supplements the account's real
+    /// limits and is never used as a replacement for them.
+    private(set) var codexResetEvent: CodexResetEvent?
     private(set) var isRefreshing = false
     /// Nil while an automatic refresh is fetching every provider; otherwise
     /// the one provider the user explicitly asked to refresh from its ring.
@@ -90,6 +93,8 @@ final class UsageStore {
     /// Watches live readings for a limit turning over, so the rail's mark can
     /// celebrate one. Independent of the alert rules; see `ResetWatch`.
     private let resetWatch = ResetWatch()
+    private let codexResetFeed = CodexResetFeed.shared
+    private var codexResetTask: Task<Void, Never>?
 
     init(settings: AppSettings, alerts: UsageAlerts? = nil) {
         self.settings = settings
@@ -191,6 +196,7 @@ final class UsageStore {
         observe()
         loadAPIKeys()
         updateActivityMonitor()
+        startCodexResetFeed()
 
         // Last time's numbers, on screen before the first request has even
         // gone out. They arrive marked stale, so the card says when they were
@@ -327,6 +333,7 @@ final class UsageStore {
         networkProxy = settings.networkProxy
         loadAPIKeys()
         updateActivityMonitor()
+        refreshCodexResetFeed(force: true)
         guard proxyChanged else {
             refresh()
             return
@@ -354,10 +361,43 @@ final class UsageStore {
     func stop() {
         timer?.invalidate()
         timer = nil
+        codexResetTask?.cancel()
+        codexResetTask = nil
         activity.stop()
         observers.forEach { $0.center.removeObserver($0.token) }
         observers.removeAll()
         Task { [appServer] in await appServer.shutDown() }
+    }
+
+    /// The announcement feed has its own conservative cadence. It does not
+    /// ride the adaptive provider loop: looking at a usage card can make that
+    /// loop run every two minutes, which is needless traffic for news that
+    /// changes at most a few times a day.
+    private func startCodexResetFeed() {
+        guard codexResetTask == nil else { return }
+        codexResetTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                if self.settings.isEnabled(AccountKey(.codex)) {
+                    self.codexResetEvent = await self.codexResetFeed.current()
+                } else {
+                    self.codexResetEvent = nil
+                }
+                try? await Task.sleep(for: .seconds(CodexResetFeed.interval))
+            }
+        }
+    }
+
+    private func refreshCodexResetFeed(force: Bool) {
+        guard settings.isEnabled(AccountKey(.codex)) else {
+            codexResetEvent = nil
+            return
+        }
+        Task { [weak self, codexResetFeed] in
+            let event = await codexResetFeed.current(force: force)
+            guard !Task.isCancelled else { return }
+            self?.codexResetEvent = event
+        }
     }
 
     /// Longer than any pass can honestly take: every request in one carries a
@@ -621,6 +661,7 @@ final class UsageStore {
     /// narrower: it should not start the other provider's helper or spend a
     /// second endpoint request when the user asked about one ring.
     func refresh(_ account: AccountKey) {
+        if account.provider == .codex { refreshCodexResetFeed(force: true) }
         guard !settings.needsProviderSelection else { return }
         // The same ceiling as the full pass, and for the same reason: this
         // path sets the flag too, so a ring click that never came back would
@@ -951,6 +992,7 @@ final class UsageStore {
                 // Whatever happened while the display was off, the numbers on
                 // screen are now the oldest they will ever be.
                 store.refresh()
+                store.refreshCodexResetFeed(force: true)
             },
             // The *system* waking, which is a different notification from the
             // screen waking and does not always come with it — a Mac woken
@@ -959,6 +1001,7 @@ final class UsageStore {
             // case that needs asking again.
             observe(NSWorkspace.didWakeNotification, on: workspace) { store in
                 store.refresh()
+                store.refreshCodexResetFeed(force: true)
             },
             observe(ProcessInfo.thermalStateDidChangeNotification) { $0.scheduleNext() },
             observe(.NSProcessInfoPowerStateDidChange) { $0.scheduleNext() }

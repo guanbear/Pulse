@@ -617,3 +617,17 @@
 "Uses a browser session you import in Settings. Importing may ask for browser Keychain access." = "설정에서 가져온 브라우저 로그인 세션을 사용합니다. 가져올 때 브라우저의 키체인 접근 권한을 요청할 수 있습니다.";
 "Uses the GitHub login you connect in Settings. No Keychain prompt." = "설정에서 연결한 GitHub 로그인을 사용합니다. 키체인 확인 창은 표시되지 않습니다.";
 "Uses only the API key you enter in Settings. No Keychain prompt." = "설정에 입력한 API 키만 사용합니다. 키체인 확인 창은 표시되지 않습니다.";
+
+/* Codex reset announcements */
+"Reset credit" = "리셋 크레딧";
+"Limit reset" = "한도 리셋";
+"Confirmed" = "확인됨";
+"Announced" = "예고됨";
+"Confirmed recently" = "최근 확인됨";
+"Time not specified" = "시간 미정";
+"Expected %@" = "%@ 예정";
+"Expected now" = "현재 예정";
+"Expected window is open" = "예정 시간대입니다";
+"Awaiting confirmation" = "확인 대기 중";
+"AI Hot News · original post" = "AI Hot News · 원문";
+"Codex reset announcement" = "Codex 리셋 공지";

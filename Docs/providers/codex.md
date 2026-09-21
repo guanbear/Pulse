@@ -56,6 +56,16 @@ Codex’s usage endpoint wants the account named in a header of its own; `Accoun
 
 Settings can also show the account’s real lifetime total from `account/usage/read`, which is **larger than anything on this Mac**. Without that row the local ledger total reads as simply wrong.
 
+## Public reset announcements
+
+Pulse also reads the public snapshot at `https://aihot.news/api/v1/codex-resets`. This is an auxiliary news feed, not a Codex usage route. It never replaces, delays or reconciles the account limits above, and a `reset_credit` announcement is not evidence that this account received a credit. Actual available reset credits still come only from `account/usage/read`.
+
+The feed is checked immediately at launch and no more than once every 15 minutes. Requests carry `If-None-Match`; `304` keeps the current snapshot and `429` honours `Retry-After`. A failed request keeps the last good event and cannot blank usage. The API is a correction-capable whole snapshot, so a successful response replaces the previous event set rather than being appended to it.
+
+An announced scheduled event is shown through its window plus a 24-hour confirmation grace. An unscheduled announcement expires after 48 hours. A confirmed event remains visible for 24 hours. These bounds keep an old, never-confirmed post from becoming a permanent status badge.
+
+On the rail, current news is a small SF Symbol badge on Codex's existing ring. Hover still opens the ordinary usage card; the reset event is a separate adjacent card, including attribution and the original-post excerpt. Its status is deliberately “announced” or “confirmed”, never “received”.
+
 ## Ledger
 
 Codex’s `input_tokens` **includes** cached tokens; `cached_input_tokens` is the subset. Session usage is a **running total** — difference it, do not sum per-turn `last_token_usage` (measured 6% high on one long session). Shared ledger rules: [`../refresh-and-data.md`](../refresh-and-data.md).

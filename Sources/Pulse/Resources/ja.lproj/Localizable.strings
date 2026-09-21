@@ -617,3 +617,17 @@
 "Uses a browser session you import in Settings. Importing may ask for browser Keychain access." = "設定で読み込んだブラウザのログインセッションを使います。読み込み時にブラウザのキーチェーンへのアクセスを求めることがあります。";
 "Uses the GitHub login you connect in Settings. No Keychain prompt." = "設定で連携した GitHub のログインを使います。キーチェーンの確認はありません。";
 "Uses only the API key you enter in Settings. No Keychain prompt." = "設定で入力した API キーだけを使います。キーチェーンの確認はありません。";
+
+/* Codex reset announcements */
+"Reset credit" = "リセットクレジット";
+"Limit reset" = "上限リセット";
+"Confirmed" = "確認済み";
+"Announced" = "予告";
+"Confirmed recently" = "最近確認済み";
+"Time not specified" = "時刻未定";
+"Expected %@" = "%@ の予定";
+"Expected now" = "現在の予定";
+"Expected window is open" = "予定時間内です";
+"Awaiting confirmation" = "確認待ち";
+"AI Hot News · original post" = "AI Hot News · 元の投稿";
+"Codex reset announcement" = "Codex リセットのお知らせ";

@@ -16,6 +16,10 @@ struct FloatingUsagePanelView: View {
     /// limits, so the card's height isn't knowable up front — and both the
     /// card's placement and the pointer's aim depend on it.
     @State private var cardHeight: CGFloat = DetailCardLayout.estimatedHeight
+    /// The full flyout width, including the optional reset-news card. Like
+    /// height it is measured from the actual view, so the pointer and fixed
+    /// panel budget cannot drift from what SwiftUI draws.
+    @State private var cardWidth: CGFloat = DetailCardLayout.width + DetailCardLayout.pointerWidth
     /// Whether the pointer is on the panel. The rail is drawn out only while
     /// it is; the rest of the time a sliver stands in for it.
     @State private var isHovered = false
@@ -106,20 +110,13 @@ struct FloatingUsagePanelView: View {
                 .fixedSize()
                 .overlay(alignment: placement.edge.cardAlignment) {
                     if let selected = selectedUsage, let index = selectedIndex {
-                        UsageDetailCard(
-                            usesGlass: settings.usesGlass,
-                            usage: selected,
-                            title: selectedTitle ?? "",
-                            edge: placement.edge,
-                            showsRemaining: settings.showsRemaining,
-                            showsForecast: settings.showsForecast,
-                            pointerCenter: pointerCentre(for: index)
-                        )
+                        detailCards(selected, index: index)
                         .fixedSize()
                         .background(
                             GeometryReader { proxy in
-                                Color.clear.onChange(of: proxy.size.height, initial: true) { _, height in
-                                    cardHeight = height
+                                Color.clear.onChange(of: proxy.size, initial: true) { _, size in
+                                    cardHeight = size.height
+                                    cardWidth = size.width
                                 }
                             }
                         )
@@ -319,7 +316,8 @@ struct FloatingUsagePanelView: View {
             elapsed: settings.showsWindowClock ? headline?.elapsedFraction(at: minute) : nil,
             figure: figure,
             second: settings.showsSecondRing ? usage.secondWindow(preferring: pinned) : nil,
-            showsRemaining: settings.showsRemaining
+            showsRemaining: settings.showsRemaining,
+            resetBadge: account.provider == .codex ? store.codexResetEvent?.kind : nil
         )
     }
 
@@ -370,6 +368,36 @@ struct FloatingUsagePanelView: View {
         return entries.firstIndex { $0.id == selectedSlot }
     }
 
+    /// Usage remains the card nearest the rail. Reset news is added farther
+    /// out, so the existing pointer still belongs to the live quota card and
+    /// the two facts cannot be mistaken for one another.
+    @ViewBuilder
+    private func detailCards(_ usage: ProviderUsage, index: Int) -> some View {
+        let usageCard = UsageDetailCard(
+            usesGlass: settings.usesGlass,
+            usage: usage,
+            title: selectedTitle ?? "",
+            edge: placement.edge,
+            showsRemaining: settings.showsRemaining,
+            showsForecast: settings.showsForecast,
+            pointerCenter: pointerCentre(for: index)
+        )
+
+        if usage.provider == .codex, let event = store.codexResetEvent {
+            HStack(alignment: .top, spacing: ResetEventCardLayout.gap) {
+                if placement.edge == .right {
+                    CodexResetEventCard(event: event, usesGlass: settings.usesGlass)
+                }
+                usageCard
+                if placement.edge != .right {
+                    CodexResetEventCard(event: event, usesGlass: settings.usesGlass)
+                }
+            }
+        } else {
+            usageCard
+        }
+    }
+
     /// Where a ring's centre sits **along** the rail, in the coordinate space
     /// the rail and the card share. Centres march from the rail's first-ring
     /// offset, advancing one item plus one gap each time.
@@ -381,7 +409,7 @@ struct FloatingUsagePanelView: View {
     /// The card's own extent along that same axis: its height beside the rail,
     /// its width below it.
     private var cardAlong: CGFloat {
-        placement.edge.isVertical ? cardHeight : DetailCardLayout.width
+        placement.edge.isVertical ? cardHeight : cardWidth
     }
 
     /// How far along the rail the card starts, measured from the rail's own
@@ -426,9 +454,7 @@ struct FloatingUsagePanelView: View {
     private var cardOffset: CGSize {
         switch placement.edge.axis {
         case .vertical:
-            let inset = DetailCardLayout.width
-                + DetailCardLayout.pointerWidth
-                + DetailCardLayout.horizontalGap
+            let inset = cardWidth + DetailCardLayout.horizontalGap
             return CGSize(width: inset * placement.edge.cardDirection, height: 0)
         case .horizontal:
             return CGSize(width: 0, height: railSize.height + DetailCardLayout.horizontalGap)

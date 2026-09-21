@@ -617,3 +617,17 @@
 "Uses a browser session you import in Settings. Importing may ask for browser Keychain access." = "Uses a browser session you import in Settings. Importing may ask for browser Keychain access.";
 "Uses the GitHub login you connect in Settings. No Keychain prompt." = "Uses the GitHub login you connect in Settings. No Keychain prompt.";
 "Uses only the API key you enter in Settings. No Keychain prompt." = "Uses only the API key you enter in Settings. No Keychain prompt.";
+
+/* Codex reset announcements */
+"Reset credit" = "Reset credit";
+"Limit reset" = "Limit reset";
+"Confirmed" = "Confirmed";
+"Announced" = "Announced";
+"Confirmed recently" = "Confirmed recently";
+"Time not specified" = "Time not specified";
+"Expected %@" = "Expected %@";
+"Expected now" = "Expected now";
+"Expected window is open" = "Expected window is open";
+"Awaiting confirmation" = "Awaiting confirmation";
+"AI Hot News · original post" = "AI Hot News · original post";
+"Codex reset announcement" = "Codex reset announcement";

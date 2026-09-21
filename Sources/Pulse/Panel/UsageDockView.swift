@@ -352,6 +352,9 @@ struct RailEntry: Identifiable, Equatable {
     /// together. Carried on the entry like the tint, because the item is built
     /// from this and doesn't otherwise see the settings.
     var showsRemaining: Bool = false
+    /// Public Codex reset news, shown as a small badge without replacing any
+    /// of the usage arcs or figures.
+    var resetBadge: CodexResetEvent.Kind?
 
     var id: String { slot.id }
 }
@@ -620,6 +623,18 @@ private struct UsageDockItem: View {
             secondFraction: entry.second?.usedFraction,
             secondIsSpent: UsageTint.isSpent(entry.second)
         )
+        .overlay(alignment: .topTrailing) {
+            if let badge = entry.resetBadge {
+                Image(systemName: badge == .resetCredit ? "ticket.fill" : "arrow.clockwise")
+                    .font(.system(size: 8 * PanelMetrics.scale, weight: .bold))
+                    .foregroundStyle(.black)
+                    .frame(width: 14 * PanelMetrics.scale, height: 14 * PanelMetrics.scale)
+                    .background(.orange, in: Circle())
+                    .overlay { Circle().stroke(.black.opacity(0.65), lineWidth: 1) }
+                    .offset(x: 3 * PanelMetrics.scale, y: -3 * PanelMetrics.scale)
+                    .accessibilityHidden(true)
+            }
+        }
         .scaleEffect(isSelected ? 1.06 : 1)
     }
 

@@ -52,6 +52,8 @@ Releasing a stalled pass is not ending it. Abandoned work still writes when it a
 
 Disabled providers are not fetched by the loop or by opening their Settings pane. After initial setup, a deliberate refresh can still ask that account by name. Automatic history loading is restricted to enabled primary accounts, and Codex's account-history method checks the primary account is enabled before starting its helper.
 
+Codex reset announcements use a separate 15-minute clock (`CodexResetFeed`), not this adaptive loop. Hovering a card therefore cannot turn a slow-moving public feed into a two-minute poll. Launch, wake/network recovery and a deliberate Codex refresh may ask immediately; ETag/`Retry-After` and last-good retention are described in [providers/codex.md](providers/codex.md#public-reset-announcements).
+
 `windowSeconds` is not evidence that a length was reported. `UsageWindow.reportsLength` distinguishes a real duration from a sort key. The window-clock arc and burn-rate divide only when the length was actually stated.
 
 ## Cache

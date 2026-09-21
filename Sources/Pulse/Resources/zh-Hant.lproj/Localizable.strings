@@ -617,3 +617,17 @@
 "Uses a browser session you import in Settings. Importing may ask for browser Keychain access." = "使用你在設定中匯入的瀏覽器登入工作階段。匯入時可能要求瀏覽器的鑰匙圈存取權限。";
 "Uses the GitHub login you connect in Settings. No Keychain prompt." = "使用你在設定中連結的 GitHub 登入。不會出現鑰匙圈提示。";
 "Uses only the API key you enter in Settings. No Keychain prompt." = "只使用你在設定中輸入的 API 金鑰。不會出現鑰匙圈提示。";
+
+/* Codex 重置公告 */
+"Reset credit" = "重置卡";
+"Limit reset" = "額度重置";
+"Confirmed" = "已確認";
+"Announced" = "已預告";
+"Confirmed recently" = "最近已確認";
+"Time not specified" = "時間未確定";
+"Expected %@" = "預計%@";
+"Expected now" = "預計正在發生";
+"Expected window is open" = "已進入預計時間窗口";
+"Awaiting confirmation" = "等待確認";
+"AI Hot News · original post" = "AI Hot News · 原帖";
+"Codex reset announcement" = "Codex 重置公告";
