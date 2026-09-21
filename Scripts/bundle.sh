@@ -30,6 +30,23 @@ FEED_URL="https://raw.githubusercontent.com/qunqin24/Pulse/main/appcast.xml"
 # private half. See Scripts/appcast.py.
 PUBLIC_KEY="$(tr -d '[:space:]' < Scripts/sparkle-public-key.txt)"
 
+# This fork must not offer an upstream update that silently removes its fork
+# features. Release bundles therefore omit Sparkle's feed by default. A source
+# builder who deliberately wants the upstream updater can opt back in with
+# `PULSE_ENABLE_UPDATES=1`; the original feed and its matching public key are
+# then emitted unchanged.
+UPDATE_PLIST="$({
+    if [ "${PULSE_ENABLE_UPDATES:-0}" = "1" ]; then
+        cat <<EOF
+    <key>SUFeedURL</key><string>$FEED_URL</string>
+    <key>SUPublicEDKey</key><string>$PUBLIC_KEY</string>
+    <key>SUEnableAutomaticChecks</key><true/>
+    <key>SUScheduledCheckInterval</key><integer>7200</integer>
+    <key>SUAutomaticallyUpdate</key><false/>
+EOF
+    fi
+})"
+
 echo "Building Pulse $VERSION (universal)…"
 
 # macOS picks which design an app gets from the SDK version recorded in its
@@ -155,25 +172,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     </dict></array>
     <key>NSHighResolutionCapable</key><true/>
     <key>NSHumanReadableCopyright</key><string>github.com/qunqin24/Pulse</string>
-    <key>SUFeedURL</key><string>$FEED_URL</string>
-    <key>SUPublicEDKey</key><string>$PUBLIC_KEY</string>
-    <!-- Checked on a schedule without asking first. Sparkle would normally put
-         up a permission prompt, but Pulse is an .accessory app whose panel
-         never becomes key, so that window can open behind everything and go
-         unanswered. The toggle is in Settings instead, where it can be found. -->
-    <key>SUEnableAutomaticChecks</key><true/>
-    <!-- Two hours, against Sparkle's default of one day. A day is sized for
-         apps that ship every few months; this one ships fixes for things it
-         is doing wrong right now, and a user burning a core on a bug that was
-         fixed yesterday should not have to wait out the rest of the day to
-         hear about it. Sparkle clamps anything under an hour, and the check
-         is measured from the last one rather than from launch, so this is at
-         most twelve requests a day and usually fewer.
-         Still only an offer: SUAutomaticallyUpdate stays false below. -->
-    <key>SUScheduledCheckInterval</key><integer>7200</integer>
-    <!-- Downloading and installing on its own stays off: an update is offered,
-         not applied behind the user's back. -->
-    <key>SUAutomaticallyUpdate</key><false/>
+$UPDATE_PLIST
 </dict>
 </plist>
 PLIST

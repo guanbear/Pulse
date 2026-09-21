@@ -21,6 +21,13 @@
   <sub><b>macOS 14 Sonoma 或更高版本</b> · Apple 芯片与 Intel 通用 · <a href="README.md"><b>English</b></a> · <b>简体中文</b> · <a href="README.zh-Hant.md"><b>繁體中文</b></a> · <a href="README.ja.md"><b>日本語</b></a> · <a href="README.ko.md"><b>한국어</b></a></sub>
 </p>
 
+> [!NOTE]
+> **Pulse Codex Reset** 是
+> [qunqin24/Pulse](https://github.com/qunqin24/Pulse) 的个人定制 fork。
+> 它保留上游产品与许可证，只增加可选的 Codex 重置消息显示，以及维护者自用的
+> Kiro 额度 provider；它不是 Pulse 官方发行版。参见
+> [定制说明与实机截图](PULSE-CODEX-RESET.md)。
+
 <p align="center">
   <img src="Docs/demo.gif" width="340" alt="贴在屏幕边缘的 Pulse 悬浮胶囊">
 </p>

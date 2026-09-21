@@ -1,0 +1,29 @@
+name: Pulse Codex Reset build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Localization keys
+        run: ./Scripts/check-localization.sh
+      - name: Build
+        run: swift build -Xswiftc -swift-version -Xswiftc 6
+      - name: Tests
+        run: swift test -Xswiftc -swift-version -Xswiftc 6
+      - name: Assemble fork-safe app
+        env:
+          PULSE_ENABLE_UPDATES: "0"
+        run: ./Scripts/bundle.sh --zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pulse-codex-reset-${{ github.run_id }}
+          path: build.noindex/Pulse-*.zip
+          retention-days: 30
+          if-no-files-found: error

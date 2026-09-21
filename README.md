@@ -21,6 +21,13 @@
   <sub><b>macOS 14 Sonoma or newer</b> · Apple Silicon & Intel Universal · <b>English</b> · <a href="README.zh-CN.md"><b>简体中文</b></a> · <a href="README.zh-Hant.md"><b>繁體中文</b></a> · <a href="README.ja.md"><b>日本語</b></a> · <a href="README.ko.md"><b>한국어</b></a></sub>
 </p>
 
+> [!NOTE]
+> **Pulse Codex Reset** is a personal customization fork of
+> [qunqin24/Pulse](https://github.com/qunqin24/Pulse). It keeps the upstream
+> product and license intact while adding optional Codex reset-news display
+> and the Kiro quota provider used by this maintainer. It is not an official
+> Pulse release. See [fork details and screenshots](PULSE-CODEX-RESET.md).
+
 <p align="center">
   <img src="Docs/demo.gif" width="340" alt="Pulse floating rail docked against the screen edge">
 </p>
