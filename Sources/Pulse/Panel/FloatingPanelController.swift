@@ -21,6 +21,15 @@ final class FloatingPanelController {
     /// nothing: it is transparent, and macOS routes clicks through the
     /// transparent parts of a non-opaque window.
     enum Layout {
+        /// Usage details and reset news are rendered as one combined bubble.
+        /// Keep this shared with geometry tests so every dock budgets the same
+        /// stable height without duplicating the composition formula.
+        static var maximumFlyoutHeight: CGFloat {
+            DetailCardLayout.maximumHeight
+                + DetailCardLayout.contentSpacing
+                + ResetEventCardLayout.maximumHeight
+        }
+
         /// The panel's size for a given dock and display housing. It changes
         /// when the axis or screen geometry changes, never while a card opens
         /// or the notch surface expands. That distinction is
@@ -33,9 +42,7 @@ final class FloatingPanelController {
             // maxima are budgeted all the time: opening news must never resize
             // the panel and make the rail jump.
             let flyoutWidth = DetailCardLayout.width
-            let flyoutHeight = DetailCardLayout.maximumHeight
-                + DetailCardLayout.contentSpacing
-                + ResetEventCardLayout.maximumHeight
+            let flyoutHeight = maximumFlyoutHeight
             let reach = flyoutWidth
                 + DetailCardLayout.pointerWidth
                 + DetailCardLayout.horizontalGap

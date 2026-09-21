@@ -86,10 +86,13 @@ struct NotchGeometryTests {
                 let attached = FloatingPanelController.Layout.size(for: .top, notchSize: notch.size)
                 #expect(abs(attached.height - ordinary.height - notch.height) < 0.01)
                 let cardTop = surface.maxY + DetailCardLayout.horizontalGap
-                #expect(abs(attached.height - cardTop - DetailCardLayout.pointerWidth - DetailCardLayout.maximumHeight) < 0.01)
-                // The old window budgets remain intact away from a notch.
+                #expect(abs(attached.height - cardTop - DetailCardLayout.pointerWidth
+                            - FloatingPanelController.Layout.maximumFlyoutHeight) < 0.01)
+                // Away from a notch, the window still budgets exactly one
+                // stable combined flyout and no housing height.
                 #expect(ordinary.height == railSize.height + DetailCardLayout.horizontalGap
-                        + DetailCardLayout.pointerWidth + DetailCardLayout.maximumHeight)
+                        + DetailCardLayout.pointerWidth
+                        + FloatingPanelController.Layout.maximumFlyoutHeight)
                 for edge in [PanelEdge.left, .right] {
                     #expect(FloatingPanelController.Layout.size(for: edge, notchSize: notch.size)
                             == FloatingPanelController.Layout.size(for: edge))
