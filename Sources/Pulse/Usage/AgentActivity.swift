@@ -174,7 +174,7 @@ enum AgentActivity {
                     continue
                 }
 
-            case .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
+            case .kiro, .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
              .zai, .glmCoding, .minimax, .minimaxCN, .copilot, .grok, .grokBot,
              .volcengine, .commandCode, .deepSeek, .devin, .xiaomiMiMo:
                 // None of these leaves transcripts Pulse reads, so nothing
@@ -276,7 +276,7 @@ enum AgentActivity {
         return switch provider {
         case .claudeCode: home.appending(path: ".claude/projects")
         case .codex: home.appending(path: ".codex/sessions")
-        case .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
+        case .kiro, .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
              .zai, .glmCoding, .minimax, .minimaxCN, .copilot, .grok, .grokBot,
              .volcengine, .commandCode, .deepSeek, .devin, .xiaomiMiMo: nil
         }

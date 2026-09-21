@@ -8,6 +8,7 @@ import Foundation
 enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
     case claudeCode
     case codex
+    case kiro
     case antigravity
     case cursor
     case openCodeGo
@@ -33,6 +34,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
         switch self {
         case .claudeCode: "Claude Code"
         case .codex: "Codex"
+        case .kiro: "Kiro"
         case .antigravity: "Antigravity"
         case .cursor: "Cursor"
         case .openCodeGo: "OpenCode Go"
@@ -95,6 +97,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
         switch self {
         case .claudeCode: "claude"
         case .codex: "openai"
+        case .kiro: "kiro"
         case .antigravity: "antigravity"
         case .cursor: "cursor"
         case .openCodeGo: "opencode"
@@ -146,7 +149,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
         // its own store rather than the JSONL both CLIs above write, so the
         // ledger cannot read it yet. False here means "no history shown",
         // which is true today and better than a column of zeroes.
-        case .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
+        case .kiro, .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
              .zai, .glmCoding, .minimax, .minimaxCN, .copilot, .grok, .grokBot,
              .volcengine, .commandCode, .deepSeek, .devin, .xiaomiMiMo: false
         }
@@ -193,7 +196,7 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
     var hasSourceChoice: Bool {
         switch self {
         case .claudeCode, .codex, .volcengine, .devin: true
-        case .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
+        case .kiro, .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
              .zai, .glmCoding, .minimax, .minimaxCN, .copilot, .grok, .grokBot,
              .commandCode, .deepSeek, .xiaomiMiMo: false
         }
@@ -227,6 +230,9 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
         case .grokBot:
             (String.localized("Cursor's own login"),
              String.localized("Grok Bot is billed to your Cursor account."))
+        case .kiro:
+            (String.localized("Kiro CLI ACP"),
+             String.localized("Uses Kiro CLI's signed-in session without reading its credentials."))
         // Either a choice of routes, or a key the user pastes: both are asked
         // about elsewhere, so there is nothing here to state.
         case .claudeCode, .codex, .openCodeGo, .kimiCode, .ollamaCloud,

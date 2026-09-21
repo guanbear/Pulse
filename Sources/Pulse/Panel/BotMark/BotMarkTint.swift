@@ -39,7 +39,7 @@ enum BotMarkTint {
         // Xiaomi's orange. The MiMo console is black-on-white, but the parent
         // brand's colour is the one a reader recognises on a rail.
         case .xiaomiMiMo: BotMarkPalette.rgb(0xFF6900)
-        case .codex, .cursor, .openCodeGo, .ollamaCloud, .zai,
+        case .codex, .kiro, .cursor, .openCodeGo, .ollamaCloud, .zai,
              .copilot, .grok, .grokBot, .commandCode, .devin:
             nil
         }
@@ -47,7 +47,7 @@ enum BotMarkTint {
 
     /// Colours for a rail, in the order its rings are drawn.
     ///
-    /// Ten of eighteen providers are monochrome by design and carry no colour
+    /// Eleven of twenty providers are monochrome by design and carry no colour
     /// at all. Ten white bots in a row is a rail you cannot read — the mark is
     /// the thing that says *which* ring this is, and identical is the one
     /// thing it must not be — so those are dealt a colour of Pulse's own.
