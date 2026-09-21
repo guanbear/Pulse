@@ -620,7 +620,7 @@
 
 /* Codex reset announcements */
 "Reset announcements" = "재설정 알림";
-"Show public Codex reset and reset-credit news below the usage card." = "공개된 Codex 한도 재설정 및 재설정 크레딧 소식을 사용량 카드 아래에 표시합니다.";
+"Show public Codex reset and reset-credit news in usage details." = "공개된 Codex 한도 재설정 및 재설정 크레딧 소식을 사용량 세부 정보에 표시합니다.";
 "Reset credit" = "리셋 크레딧";
 "Limit reset" = "한도 리셋";
 "Confirmed" = "확인됨";

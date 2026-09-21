@@ -99,6 +99,10 @@ struct UsageDetailCard: View {
     var showsRemaining: Bool = false
     /// Say whether each limit will last its window.
     var showsForecast: Bool = false
+    /// Optional public reset news for Codex. It belongs inside this detail
+    /// bubble so the one pointer keeps identifying the account whose quota is
+    /// shown above it.
+    var codexResetEvent: CodexResetEvent? = nil
     /// Where the pointer's tip should sit along the side facing the rail,
     /// measured from the card's own top or leading edge. The card gets pushed
     /// around by the panel's own edges (see
@@ -163,6 +167,13 @@ struct UsageDetailCard: View {
                 Text(footnote)
                     .font(.system(size: DetailCardLayout.footnoteFontSize, weight: .regular, design: .rounded))
                     .foregroundStyle(.primary.opacity(0.4))
+            }
+
+            if let codexResetEvent {
+                Divider()
+                    .overlay(.primary.opacity(0.12))
+
+                CodexResetEventSection(event: codexResetEvent)
             }
         }
         .padding(DetailCardLayout.padding)

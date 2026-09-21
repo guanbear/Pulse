@@ -1306,7 +1306,7 @@ struct SettingsView: View {
 
                     SettingsRow(
                         String.localized("Reset announcements"),
-                        subtitle: String.localized("Show public Codex reset and reset-credit news below the usage card.")
+                        subtitle: String.localized("Show public Codex reset and reset-credit news in usage details.")
                     ) {
                         Toggle("", isOn: Binding(
                             get: { settings.showsCodexResetAnnouncements },

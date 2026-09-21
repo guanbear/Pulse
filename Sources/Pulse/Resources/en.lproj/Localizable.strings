@@ -620,7 +620,7 @@
 
 /* Codex reset announcements */
 "Reset announcements" = "Reset announcements";
-"Show public Codex reset and reset-credit news below the usage card." = "Show public Codex reset and reset-credit news below the usage card.";
+"Show public Codex reset and reset-credit news in usage details." = "Show public Codex reset and reset-credit news in usage details.";
 "Reset credit" = "Reset credit";
 "Limit reset" = "Limit reset";
 "Confirmed" = "Confirmed";

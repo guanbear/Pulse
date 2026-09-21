@@ -370,48 +370,22 @@ struct FloatingUsagePanelView: View {
         return entries.firstIndex { $0.id == selectedSlot }
     }
 
-    /// Usage remains first and reset news sits below it. Keeping the secondary
-    /// card off the horizontal axis leaves the page behind the panel readable;
-    /// the existing pointer still belongs only to the live quota card.
-    @ViewBuilder
+    /// One bubble owns both live usage and optional reset news. A separate
+    /// second card left the pointer visually attached to the gap between them;
+    /// keeping one surface makes its target unambiguous.
     private func detailCards(_ usage: ProviderUsage, index: Int) -> some View {
-        let usageCard = UsageDetailCard(
+        UsageDetailCard(
             usesGlass: settings.usesGlass,
             usage: usage,
             title: selectedTitle ?? "",
             edge: placement.edge,
             showsRemaining: settings.showsRemaining,
             showsForecast: settings.showsForecast,
+            codexResetEvent: usage.provider == .codex && settings.showsCodexResetAnnouncements
+                ? store.codexResetEvent
+                : nil,
             pointerCenter: pointerCentre(for: index)
         )
-
-        if usage.provider == .codex,
-           settings.showsCodexResetAnnouncements,
-           let event = store.codexResetEvent {
-            VStack(alignment: .leading, spacing: ResetEventCardLayout.gap) {
-                usageCard
-                resetEventCard(event)
-            }
-        } else {
-            usageCard
-        }
-    }
-
-    /// Align the event card with the usage card's **body**, not the point of
-    /// its tail. Side-docked usage cards spend `pointerWidth` on the rail side;
-    /// the same clear padding on the event card makes the two black rectangles
-    /// form one vertical column.
-    @ViewBuilder
-    private func resetEventCard(_ event: CodexResetEvent) -> some View {
-        let card = CodexResetEventCard(event: event, usesGlass: settings.usesGlass)
-        switch placement.edge {
-        case .left:
-            card.padding(.leading, DetailCardLayout.pointerWidth)
-        case .right:
-            card.padding(.trailing, DetailCardLayout.pointerWidth)
-        case .top:
-            card
-        }
     }
 
     /// Where a ring's centre sits **along** the rail, in the coordinate space

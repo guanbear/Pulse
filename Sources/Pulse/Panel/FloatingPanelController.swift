@@ -29,12 +29,12 @@ final class FloatingPanelController {
         /// sideways and slides back every time a card appears. Re-docking
         /// happens under the pointer, with no card open, and has to resize.
         static func size(for edge: PanelEdge) -> CGSize {
-            // Live usage over optional reset news. Both maxima are budgeted
-            // all the time: opening news must never resize the panel and make
-            // the rail jump.
-            let flyoutWidth = max(DetailCardLayout.width, ResetEventCardLayout.width)
+            // Live usage and optional reset news share one bubble. Both
+            // maxima are budgeted all the time: opening news must never resize
+            // the panel and make the rail jump.
+            let flyoutWidth = DetailCardLayout.width
             let flyoutHeight = DetailCardLayout.maximumHeight
-                + ResetEventCardLayout.gap
+                + DetailCardLayout.contentSpacing
                 + ResetEventCardLayout.maximumHeight
             let reach = flyoutWidth
                 + DetailCardLayout.pointerWidth
