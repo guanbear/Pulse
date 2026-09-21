@@ -68,7 +68,7 @@ Pulse は画面の端にすっと収まる、控えめなフローティング�
 - **トークン消費（設定内のみ）**：初期状態はオフです。ページ上部でオンにするとローカル記録を読み始め、オフにすると停止します。ログ・データベース・エクスポートを含む **54 のクライアントソース**に対応しています（Gemini CLI、Cline、Roo Code、OpenClaw、GitHub Copilot など）。Cursor や Trae などのエクスポート系ソースは、事前のエクスポートかキャプチャが必要です。これらはレールに表示する 19 のクォータプロバイダとは別物で、対応状況と実クライアントでの検証状況はソースごとに異なります。[ソースと対応範囲](Docs/token-spend-sources.md)。
 - **明確な使用量の推定**：直近 7 日を初期表示し、選んだ期間を記憶します。コストは公開 API 価格で算出し、サブスクリプションの請求額ではありません。価格が不明な場合やトークン数の集計が不完全な場合、時刻の詳細が分からない場合はその旨を表示します。トークン数を記録しないソースは、その旨をそのまま表示します。
 - **モデル詳細とチャート**：モデルを開くと、入力・出力・キャッシュのトークン数と推定コスト、記録に基づく日次・時間別チャート、エージェント別の内訳、並べ替えとページ送りができる詳細テーブルを表示します。チャートにポインタを合わせると、日付または時刻とそのトークン数を読み取れます。利用できない日次・時間別の内訳は「利用不可」と表示し、ゼロとはみなしません。
-- **19 のプロバイダ**：Claude Code、Codex、Antigravity、Cursor、GitHub Copilot、Grok、Grok Bot、OpenCode Go、Kimi Code、Ollama Cloud、z.ai、Zhipu、MiniMax（国際・中国本土）、Volcengine、Command Code、DeepSeek、Devin、Xiaomi Coding Plan。
+- **20 のプロバイダ**：Claude Code、Codex、Kiro、Antigravity、Cursor、GitHub Copilot、Grok、Grok Bot、OpenCode Go、Kimi Code、Ollama Cloud、z.ai、Zhipu、MiniMax（国際・中国本土）、Volcengine、Command Code、DeepSeek、Devin、Xiaomi Coding Plan。
 - **スクリプト可**：`Pulse --json` が最後の読み取り値——プラン、すべての上限、リセット時刻、数字がどれだけ古いか——を出力します。tmux、sketchybar、Raycast、シェルプロンプトにどうぞ。キャッシュを読むだけなので、ポーリングのコストはかかりません。
 - **開発者向け連携**：設定から Raycast 拡張と、そのまま設定できる tmux・sketchybar・シェルのスクリプトを書き出せます。アカウントのリンクは該当ペインを直接開きます。[セットアップガイド](Docs/integrations.md)。
 - **接続診断**：実際の読み取り元、キャッシュの利用、最新のチェックとフォールバックの結果を確認できます。状況に応じた操作で再接続・再ログイン・認証情報の修正ができ、アカウント情報やシークレットを含まない診断レポートをコピーできます。
@@ -108,6 +108,7 @@ Pulse は各サービスが報告する数字をそのまま表示します。�
 |---|---|---|
 | **Claude Code** | アカウントの OAuth 使用量エンドポイント。Claude デスクトップのセッションとステータスラインへ自動フォールバック | 既存の CLI／デスクトップセッションを読み取り、シームレスに自動フォールバック |
 | **Codex** | クライアントの使用量エンドポイント。`codex app-server` へフォールバック | ローカルの Codex 認証情報を直接読み取り |
+| **Kiro** | Kiro CLI ネイティブの ACP 使用量メソッド | Kiro CLI のログイン済みセッションを利用。Pulse が Kiro の認証情報を読み取ったり保存したりすることはありません（[詳細](Docs/providers/kiro.md)） |
 | **Antigravity** | ローカルの Language Server（LSP） | Antigravity エディタの実行中のみ有効 |
 | **Cursor** | Cursor アカウントの使用量サマリー API | 既存のエディタログインから fast と slow のリクエストプールを表示 |
 | **Grok** | Grok Build CLI プロキシ（`cli-chat-proxy.grok.com`） | すべての Grok 製品で共有される単一の週次プール |
