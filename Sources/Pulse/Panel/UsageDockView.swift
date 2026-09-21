@@ -352,8 +352,8 @@ struct RailEntry: Identifiable, Equatable {
     /// together. Carried on the entry like the tint, because the item is built
     /// from this and doesn't otherwise see the settings.
     var showsRemaining: Bool = false
-    /// Public Codex reset news, shown as a quiet unread dot without replacing
-    /// any of the usage arcs, figures, or provider mark.
+    /// Public Codex reset news, shown beside the percentage when it exists and
+    /// as a quiet ring dot only when that label has been hidden.
     var showsCodexResetAnnouncement = false
 
     var id: String { slot.id }
@@ -624,7 +624,7 @@ private struct UsageDockItem: View {
             secondIsSpent: UsageTint.isSpent(entry.second)
         )
         .overlay(alignment: .topTrailing) {
-            if entry.showsCodexResetAnnouncement {
+            if entry.showsCodexResetAnnouncement && !showsPercentage {
                 Circle()
                     .fill(.orange)
                     .frame(width: 7 * PanelMetrics.scale, height: 7 * PanelMetrics.scale)
@@ -642,14 +642,23 @@ private struct UsageDockItem: View {
     @ViewBuilder
     private var percentLabel: some View {
         if showsPercentage {
-            Text(headline?.percentText(remaining: entry.showsRemaining) ?? entry.figure ?? "—")
+            HStack(spacing: 4 * PanelMetrics.scale) {
+                Text(headline?.percentText(remaining: entry.showsRemaining) ?? entry.figure ?? "—")
+                    // Money is longer than a percentage and its length is not
+                    // bounded by anything — "¥9.40" fits where "$1,234.56"
+                    // does not — so it shrinks to fit rather than being cut
+                    // off inside the ring.
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+
+                if entry.showsCodexResetAnnouncement {
+                    Circle()
+                        .fill(.orange)
+                        .frame(width: 6 * PanelMetrics.scale, height: 6 * PanelMetrics.scale)
+                        .accessibilityHidden(true)
+                }
+            }
                 .font(.system(size: DockLayout.percentFontSize, weight: .medium, design: .rounded))
-                // Money is longer than a percentage and its length is not
-                // bounded by anything — "¥9.40" fits where "$1,234.56" does
-                // not — so it shrinks to fit rather than being cut off inside
-                // the ring.
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
                 // A spent limit colours the figure too. At ring size a fourth
                 // hue on the stroke alone would read as the third.
                 .foregroundStyle(
