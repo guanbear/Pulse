@@ -5,14 +5,17 @@ import Testing
 struct CodexResetFeedTests {
     @Test @MainActor
     func panelAlwaysBudgetsBothCards() {
-        let flyout = DetailCardLayout.width
-            + DetailCardLayout.pointerWidth
+        let flyoutHeight = DetailCardLayout.maximumHeight
             + ResetEventCardLayout.gap
-            + ResetEventCardLayout.width
+            + ResetEventCardLayout.maximumHeight
+        let sideWidth = DetailCardLayout.width + DetailCardLayout.pointerWidth
 
-        #expect(FloatingPanelController.Layout.size(for: .left).width >= flyout)
-        #expect(FloatingPanelController.Layout.size(for: .right).width >= flyout)
-        #expect(FloatingPanelController.Layout.size(for: .top).width >= flyout)
+        #expect(FloatingPanelController.Layout.size(for: .left).width >= sideWidth)
+        #expect(FloatingPanelController.Layout.size(for: .right).width >= sideWidth)
+        #expect(FloatingPanelController.Layout.size(for: .left).height >= flyoutHeight)
+        #expect(FloatingPanelController.Layout.size(for: .right).height >= flyoutHeight)
+        #expect(FloatingPanelController.Layout.size(for: .top).width >= ResetEventCardLayout.width)
+        #expect(FloatingPanelController.Layout.size(for: .top).height >= flyoutHeight)
     }
 
     @Test

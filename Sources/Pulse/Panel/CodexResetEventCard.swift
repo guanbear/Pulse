@@ -1,7 +1,9 @@
 import SwiftUI
 
 enum ResetEventCardLayout {
-    static var width: CGFloat { 224 * PanelMetrics.scale }
+    /// Matches the usage card's body. The usage card is wider only by its
+    /// pointer, which the stacked event card pads around at the rail side.
+    static var width: CGFloat { DetailCardLayout.width }
     static var gap: CGFloat { 12 * PanelMetrics.scale }
     static var maximumHeight: CGFloat { 250 * PanelMetrics.scale }
 }

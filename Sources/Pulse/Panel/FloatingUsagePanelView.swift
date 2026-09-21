@@ -368,9 +368,9 @@ struct FloatingUsagePanelView: View {
         return entries.firstIndex { $0.id == selectedSlot }
     }
 
-    /// Usage remains the card nearest the rail. Reset news is added farther
-    /// out, so the existing pointer still belongs to the live quota card and
-    /// the two facts cannot be mistaken for one another.
+    /// Usage remains first and reset news sits below it. Keeping the secondary
+    /// card off the horizontal axis leaves the page behind the panel readable;
+    /// the existing pointer still belongs only to the live quota card.
     @ViewBuilder
     private func detailCards(_ usage: ProviderUsage, index: Int) -> some View {
         let usageCard = UsageDetailCard(
@@ -384,17 +384,29 @@ struct FloatingUsagePanelView: View {
         )
 
         if usage.provider == .codex, let event = store.codexResetEvent {
-            HStack(alignment: .top, spacing: ResetEventCardLayout.gap) {
-                if placement.edge == .right {
-                    CodexResetEventCard(event: event, usesGlass: settings.usesGlass)
-                }
+            VStack(alignment: .leading, spacing: ResetEventCardLayout.gap) {
                 usageCard
-                if placement.edge != .right {
-                    CodexResetEventCard(event: event, usesGlass: settings.usesGlass)
-                }
+                resetEventCard(event)
             }
         } else {
             usageCard
+        }
+    }
+
+    /// Align the event card with the usage card's **body**, not the point of
+    /// its tail. Side-docked usage cards spend `pointerWidth` on the rail side;
+    /// the same clear padding on the event card makes the two black rectangles
+    /// form one vertical column.
+    @ViewBuilder
+    private func resetEventCard(_ event: CodexResetEvent) -> some View {
+        let card = CodexResetEventCard(event: event, usesGlass: settings.usesGlass)
+        switch placement.edge {
+        case .left:
+            card.padding(.leading, DetailCardLayout.pointerWidth)
+        case .right:
+            card.padding(.trailing, DetailCardLayout.pointerWidth)
+        case .top:
+            card
         }
     }
 

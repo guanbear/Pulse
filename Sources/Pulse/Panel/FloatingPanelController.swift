@@ -29,14 +29,15 @@ final class FloatingPanelController {
         /// sideways and slides back every time a card appears. Re-docking
         /// happens under the pointer, with no card open, and has to resize.
         static func size(for edge: PanelEdge) -> CGSize {
-            // Live usage + its pointer + the optional adjacent reset-news
-            // card. This maximum is budgeted all the time: opening news must
-            // never resize the panel and make the rail jump.
-            let flyoutWidth = DetailCardLayout.width
-                + DetailCardLayout.pointerWidth
+            // Live usage over optional reset news. Both maxima are budgeted
+            // all the time: opening news must never resize the panel and make
+            // the rail jump.
+            let flyoutWidth = max(DetailCardLayout.width, ResetEventCardLayout.width)
+            let flyoutHeight = DetailCardLayout.maximumHeight
                 + ResetEventCardLayout.gap
-                + ResetEventCardLayout.width
+                + ResetEventCardLayout.maximumHeight
             let reach = flyoutWidth
+                + DetailCardLayout.pointerWidth
                 + DetailCardLayout.horizontalGap
 
             switch edge.axis {
@@ -50,8 +51,7 @@ final class FloatingPanelController {
                     // rather than as a card that didn't fit.
                     height: max(
                         DockLayout.maximumLength(on: .vertical),
-                        DetailCardLayout.maximumHeight,
-                        ResetEventCardLayout.maximumHeight
+                        flyoutHeight
                     )
                 )
             case .horizontal:
@@ -61,7 +61,7 @@ final class FloatingPanelController {
                     height: DockLayout.thickness(on: .horizontal)
                         + DetailCardLayout.horizontalGap
                         + DetailCardLayout.pointerWidth
-                        + max(DetailCardLayout.maximumHeight, ResetEventCardLayout.maximumHeight)
+                        + flyoutHeight
                 )
             }
         }
