@@ -103,13 +103,11 @@ enum Provider: String, CaseIterable, Identifiable, Codable, Sendable {
         case .openCodeGo: "opencode"
         case .kimiCode: "kimi"
         case .ollamaCloud: "ollama"
-        case .zai: "zai"
-        // 清言's mark, not the corporate Zhipu one. Both rows are the same
-        // company's two storefronts, so the mark is the only thing telling
-        // them apart on the rail — and the corporate logo is a wordmark-ish
-        // glyph that reads as "the same company as the other row" rather than
-        // as a different row.
-        case .glmCoding: "qingyan"
+        // One mark for both storefronts, the way MiniMax's two rows share
+        // theirs. The rail stops distinguishing them: the ring names do it,
+        // and those are only read on the card. Deliberate — a rail carrying
+        // both rows shows one mark twice.
+        case .zai, .glmCoding: "zai"
         // One mark for both, since there is only one brand. Two accounts of one
         // provider already share a mark on the rail; this is the same case.
         case .minimax, .minimaxCN: "minimax"
