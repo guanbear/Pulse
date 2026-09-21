@@ -12,9 +12,11 @@ struct KiroUsageTests {
     }
 
     @Test("Provider uses the bundled Kiro mark")
+    @MainActor
     func hasBundledIcon() throws {
         #expect(Provider.kiro.iconResource == "kiro")
-        #expect(Bundle.module.url(forResource: "kiro", withExtension: "svg") != nil)
+        #expect(LobeIconStore.image(named: Provider.kiro.iconResource) != nil,
+                "\(Provider.kiro.iconResource).svg does not load")
     }
 
     @Test("ACP usage maps every bounded credit pool")
