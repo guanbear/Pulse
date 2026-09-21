@@ -13,7 +13,7 @@ struct KiroUsageTests {
 
     @Test("Provider uses the bundled Kiro mark")
     func hasBundledIcon() throws {
-        #expect(UsageProvider.kiro.iconResource == "kiro")
+        #expect(Provider.kiro.iconResource == "kiro")
         #expect(Bundle.module.url(forResource: "kiro", withExtension: "svg") != nil)
     }
 
