@@ -19,10 +19,10 @@ import Observation
 /// - Codex brackets each turn with `task_started` and `task_complete` events,
 ///   and its tool calls and their results say which half of a turn is in
 ///   flight.
-/// - Kiro CLI and Kiro ACP share Prompt, ToolResults and AssistantMessage
-///   session records.
-/// - ZCode's TUI and `zcode-acp` share turn lifecycle telemetry, including a
-///   stable turn id when several turns overlap.
+/// - Kiro Desktop and ACP share v2 turn events; the CLI's v1 records state the
+///   same lifecycle with Prompt, ToolResults and AssistantMessage records.
+/// - ZCode Desktop, its TUI and `zcode-acp` share turn lifecycle telemetry,
+///   including a stable turn id when several turns overlap.
 ///
 /// So only the tail of the newest transcripts is read, and the answer is exact
 /// rather than a guess with a timer attached.
@@ -190,6 +190,22 @@ enum AgentActivity {
                 }
 
             case .kiro:
+                switch (record["payload"] as? [String: Any])?["type"] as? String {
+                case "turn_end":
+                    return .finished
+                case "turn_start", "tool_result", "interaction_resolved", "assistant",
+                     "sub_agent_complete":
+                    return .working(.model, at: stamp(of: record))
+                case "tool_call", "sub_agent_start":
+                    return .working(.tool, at: stamp(of: record))
+                case "pending_interaction":
+                    // The turn is open but is waiting for a person, not doing
+                    // work. Do not animate a provider that needs attention.
+                    return .finished
+                default:
+                    break
+                }
+
                 switch record["kind"] as? String {
                 case "Prompt", "ToolResults":
                     return .working(.model, at: stamp(of: record))
@@ -357,7 +373,10 @@ enum AgentActivity {
         return switch provider {
         case .claudeCode: home.appending(path: ".claude/projects")
         case .codex: home.appending(path: ".codex/sessions")
-        case .kiro: home.appending(path: ".kiro/sessions/cli")
+        // Kiro CLI's v1 files live directly under `cli`; Kiro Desktop and ACP
+        // v2 sessions live in workspace/session subdirectories. One recursive
+        // walk covers both without treating the desktop process itself as work.
+        case .kiro: home.appending(path: ".kiro/sessions")
         case .zai, .glmCoding:
             zcodeStorefront(home: home) == provider ? home.appending(path: ".zcode/cli/log") : nil
         case .antigravity, .cursor, .openCodeGo, .kimiCode, .ollamaCloud,
