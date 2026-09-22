@@ -352,7 +352,7 @@ enum AgentActivity {
         for case let url as URL in walker {
             guard !Task.isCancelled else { break }
             guard
-                url.pathExtension == "jsonl",
+                isActivityFile(url, provider: provider),
                 let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .fileSizeKey]),
                 let modified = values.contentModificationDate,
                 (values.fileSize ?? 0) > 0
@@ -362,6 +362,17 @@ enum AgentActivity {
         }
 
         return found.sorted { $0.modified > $1.modified }
+    }
+
+    private static func isActivityFile(_ url: URL, provider: Provider) -> Bool {
+        guard url.pathExtension == "jsonl" else { return false }
+        guard provider == .kiro else { return true }
+
+        // v1 CLI sessions are flat under `cli`; v2 Desktop and ACP sessions
+        // use `messages.jsonl`. Their `sub-executions` files carry a different
+        // schema and must not trigger the unknown-format freshness fallback.
+        return url.lastPathComponent == "messages.jsonl"
+            || url.deletingLastPathComponent().lastPathComponent == "cli"
     }
 
     /// Nil for an agent that leaves no transcripts, which is what keeps this
