@@ -6,8 +6,8 @@ import Testing
 struct AgentActivityTests {
     private static let now = Date(timeIntervalSince1970: 1_800_000_000)
 
-    @Test("The scanner reads only the selected transcript providers", arguments: [
-        Set<Provider>(), [.deepSeek], [.claudeCode], [.codex], [.claudeCode, .codex]
+    @Test("The scanner reads only the selected activity providers", arguments: [
+        Set<Provider>(), [.deepSeek], [.claudeCode], [.codex], [.kiro], [.claudeCode, .codex]
     ])
     func selectedTranscripts(providers: Set<Provider>) throws {
         let home = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
@@ -19,7 +19,9 @@ struct AgentActivityTests {
             ".claude/projects/test/session.jsonl":
                 "{\"type\":\"user\",\"timestamp\":\"\(stamp)\",\"message\":{\"content\":\"test\"}}\n",
             ".codex/sessions/test/session.jsonl":
-                "{\"type\":\"event_msg\",\"timestamp\":\"\(stamp)\",\"payload\":{\"type\":\"task_started\"}}\n"
+                "{\"type\":\"event_msg\",\"timestamp\":\"\(stamp)\",\"payload\":{\"type\":\"task_started\"}}\n",
+            ".kiro/sessions/cli/session.jsonl":
+                "{\"version\":\"v1\",\"kind\":\"Prompt\",\"data\":{\"content\":\"test\"}}\n"
         ]
         for (path, text) in logs {
             let file = home.appending(path: path)
@@ -29,9 +31,88 @@ struct AgentActivityTests {
         }
 
         let states = AgentActivity.states(for: providers, now: Self.now, home: home)
-        #expect(Set(states.keys) == providers.filter(\.keepsLocalTranscripts))
+        #expect(Set(states.keys) == providers.filter(\.supportsLocalActivity))
+        #expect(states[.deepSeek] == nil)
         #expect(states.values.allSatisfy { $0.isWorking })
         #expect(states.values.allSatisfy { $0.lastWrite == Self.now })
+    }
+
+    @Test("Kiro CLI and ACP session records bracket model and tool work")
+    func kiroVerdicts() throws {
+        let home = try EditorTestSupport.temporary("kiro-activity")
+        defer { try? FileManager.default.removeItem(at: home) }
+        let file = home.appending(path: "session.jsonl")
+
+        try EditorTestSupport.jsonLines([
+            ["version": "v1", "kind": "Prompt", "data": ["content": "review"]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .working(.model, at: nil))
+
+        try EditorTestSupport.jsonLines([
+            ["version": "v1", "kind": "AssistantMessage", "data": [
+                "content": [["kind": "toolUse", "name": "read"]],
+            ]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .working(.tool, at: nil))
+
+        try EditorTestSupport.jsonLines([
+            ["version": "v1", "kind": "ToolResults", "data": ["content": []]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .working(.model, at: nil))
+
+        try EditorTestSupport.jsonLines([
+            ["version": "v1", "kind": "AssistantMessage", "data": [
+                "content": [["kind": "text", "text": "done"]],
+            ]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .finished)
+    }
+
+    @Test("ZCode native and ACP telemetry follows each turn independently")
+    func zcodeVerdicts() throws {
+        let home = try EditorTestSupport.temporary("zcode-activity")
+        defer { try? FileManager.default.removeItem(at: home) }
+        let file = home.appending(path: "zcode.jsonl")
+        let stamp = ISO8601DateFormatter().string(from: Self.now)
+
+        try EditorTestSupport.jsonLines([
+            ["event": "turn.started", "timestamp": stamp, "turnId": "turn-a"],
+            ["event": "turn.started", "timestamp": stamp, "turnId": "turn-b"],
+            ["event": "turn.completed", "timestamp": stamp, "turnId": "turn-b"],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .glmCoding) == .working(.model, at: Self.now))
+
+        try EditorTestSupport.jsonLines([
+            ["event": "turn.started", "timestamp": stamp, "turnId": "turn-a"],
+            ["event": "tool.call.started", "timestamp": stamp, "turnId": "turn-a"],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .glmCoding) == .working(.tool, at: Self.now))
+
+        try EditorTestSupport.jsonLines([
+            ["event": "turn.started", "timestamp": stamp, "turnId": "turn-a"],
+            ["event": "turn.completed", "timestamp": stamp, "turnId": "turn-a"],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .glmCoding) == .finished)
+    }
+
+    @Test("ZCode activity is attributed only to the configured GLM storefront")
+    func zcodeStorefront() throws {
+        let home = try EditorTestSupport.temporary("zcode-storefront")
+        defer { try? FileManager.default.removeItem(at: home) }
+        let config = home.appending(path: ".zcode/cli/config.json")
+        let log = home.appending(path: ".zcode/cli/log/zcode-2026-09-22.jsonl")
+        let stamp = ISO8601DateFormatter().string(from: Self.now)
+
+        try FileManager.default.createDirectory(at: config.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data(#"{"model":{"main":"bigmodel/GLM-5.3"},"provider":{"bigmodel":{"options":{"baseURL":"https://open.bigmodel.cn/api/anthropic"}}}}"#.utf8).write(to: config)
+        try EditorTestSupport.jsonLines([
+            ["event": "turn.started", "timestamp": stamp, "turnId": "turn-a"],
+        ], to: log)
+        try FileManager.default.setAttributes([.modificationDate: Self.now], ofItemAtPath: log.path)
+
+        let states = AgentActivity.states(for: [.glmCoding, .zai], now: Self.now, home: home)
+        #expect(states[.glmCoding]?.isWorking == true)
+        #expect(states[.zai]?.isWorking == false)
     }
 
     private actor Reader {
