@@ -90,15 +90,16 @@ final class UsageStore {
 
     /// Whether either CLI is working right now. Its own clock — see
     /// `AgentActivityMonitor`.
-    let activity = AgentActivityMonitor()
+    let activity: AgentActivityMonitor
     /// Watches live readings for a limit turning over, so the rail's mark can
     /// celebrate one. Independent of the alert rules; see `ResetWatch`.
     private let resetWatch = ResetWatch()
     private let codexResetFeed = CodexResetFeed.shared
     private var codexResetTask: Task<Void, Never>?
 
-    init(settings: AppSettings, alerts: UsageAlerts? = nil) {
+    init(settings: AppSettings, alerts: UsageAlerts? = nil, activity: AgentActivityMonitor = AgentActivityMonitor()) {
         self.settings = settings
+        self.activity = activity
         networkProxy = settings.networkProxy
         self.alerts = alerts
         codex = CodexUsageService(server: appServer)
@@ -351,9 +352,10 @@ final class UsageStore {
 
     /// Nothing shows the spinner while the panel is off screen or the display
     /// is asleep, so nothing needs watching either.
-    private func updateActivityMonitor() {
+    /// Internal so tests can check selection without starting provider requests.
+    func updateActivityMonitor() {
         if !settings.needsProviderSelection && settings.isPanelVisible && !screensAsleep {
-            activity.start()
+            activity.start(providers: Set(settings.shownAccounts.map(\.provider)))
         } else {
             activity.stop()
         }
