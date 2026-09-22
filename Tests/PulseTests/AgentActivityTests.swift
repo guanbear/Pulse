@@ -96,6 +96,27 @@ struct AgentActivityTests {
         #expect(AgentActivity.verdict(for: file, provider: .kiro) == .finished)
     }
 
+    @Test("Kiro v2 ignores sub-execution JSONL when the main turn is finished")
+    func kiroV2IgnoresSubExecutions() throws {
+        let home = try EditorTestSupport.temporary("kiro-v2-sub-execution")
+        defer { try? FileManager.default.removeItem(at: home) }
+        let session = home.appending(path: ".kiro/sessions/workspace/session")
+        let stamp = ISO8601DateFormatter().string(from: Self.now)
+        let messages = session.appending(path: "messages.jsonl")
+        let sub = session.appending(path: "sub-executions/noise.jsonl")
+
+        try EditorTestSupport.jsonLines([
+            ["timestamp": stamp, "payload": ["type": "turn_end", "executionId": "exec-a"]],
+        ], to: messages)
+        try EditorTestSupport.jsonLines([["status": "complete"]], to: sub)
+        for file in [messages, sub] {
+            try FileManager.default.setAttributes([.modificationDate: Self.now], ofItemAtPath: file.path)
+        }
+
+        let state = try #require(AgentActivity.states(for: [.kiro], now: Self.now, home: home)[.kiro])
+        #expect(!state.isWorking)
+    }
+
     @Test("ZCode native and ACP telemetry follows each turn independently")
     func zcodeVerdicts() throws {
         let home = try EditorTestSupport.temporary("zcode-activity")
