@@ -68,6 +68,34 @@ struct AgentActivityTests {
         #expect(AgentActivity.verdict(for: file, provider: .kiro) == .finished)
     }
 
+    @Test("Kiro Desktop and v2 ACP lifecycle records bracket a turn")
+    func kiroV2Verdicts() throws {
+        let home = try EditorTestSupport.temporary("kiro-v2-activity")
+        defer { try? FileManager.default.removeItem(at: home) }
+        let file = home.appending(path: "messages.jsonl")
+        let stamp = ISO8601DateFormatter().string(from: Self.now)
+
+        try EditorTestSupport.jsonLines([
+            ["timestamp": stamp, "payload": ["type": "turn_start", "executionId": "exec-a"]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .working(.model, at: Self.now))
+
+        try EditorTestSupport.jsonLines([
+            ["timestamp": stamp, "payload": ["type": "tool_call", "executionId": "exec-a"]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .working(.tool, at: Self.now))
+
+        try EditorTestSupport.jsonLines([
+            ["timestamp": stamp, "payload": ["type": "tool_result", "executionId": "exec-a"]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .working(.model, at: Self.now))
+
+        try EditorTestSupport.jsonLines([
+            ["timestamp": stamp, "payload": ["type": "turn_end", "executionId": "exec-a"]],
+        ], to: file)
+        #expect(AgentActivity.verdict(for: file, provider: .kiro) == .finished)
+    }
+
     @Test("ZCode native and ACP telemetry follows each turn independently")
     func zcodeVerdicts() throws {
         let home = try EditorTestSupport.temporary("zcode-activity")
