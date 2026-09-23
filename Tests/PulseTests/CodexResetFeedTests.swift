@@ -37,7 +37,7 @@ struct CodexResetFeedTests {
 
     @Test
     func recentConfirmedCreditOutranksActiveResetAnnouncement() throws {
-        let snapshot = try CodexResetFeed.decode(Data(Self.fixture.utf8))
+        let snapshot = try CodexResetFeed.decode(Data(Self.overlappingConfirmationFixture.utf8))
         let event = try #require(CodexResetEvent.current(
             in: snapshot.events,
             at: Self.date("2026-09-23T09:00:00.000+08:00")
@@ -110,7 +110,14 @@ struct CodexResetFeedTests {
           "schedule": null,
           "posts": [],
           "url": "https://example.com/resets"
-        },
+        }
+      ]
+    }
+    """#
+
+    private static let overlappingConfirmationFixture = #"""
+    {
+      "events": [
         {
           "id": "active-reset",
           "type": "direct_reset",
