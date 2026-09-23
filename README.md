@@ -180,8 +180,8 @@ Pulse is built with native Swift and SwiftUI. Building the current sources needs
 
 ```bash
 # Clone the repository
-    git clone https://github.com/guanbear/Pulse-codex-reset.git
-    cd Pulse-codex-reset
+git clone https://github.com/guanbear/Pulse-codex-reset.git
+cd Pulse-codex-reset
 
 # Build the app bundle
 ./Scripts/bundle.sh
