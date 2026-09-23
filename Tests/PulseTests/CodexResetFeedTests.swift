@@ -1,8 +1,32 @@
 import Foundation
+import SwiftUI
 import Testing
 @testable import Pulse
 
 struct CodexResetFeedTests {
+    @Test @MainActor
+    func railDotMatchesAnnouncementStatus() {
+        let usage = ProviderUsage.unavailable(.codex, reason: .loading)
+        let slot = RailSlot(AccountKey(.codex))
+        let announced = RailEntry(
+            usage: usage,
+            headline: nil,
+            slot: slot,
+            title: "Codex",
+            codexResetStatus: .announced
+        )
+        let confirmed = RailEntry(
+            usage: usage,
+            headline: nil,
+            slot: slot,
+            title: "Codex",
+            codexResetStatus: .confirmed
+        )
+
+        #expect(announced.codexResetColor == .orange)
+        #expect(confirmed.codexResetColor == .green)
+    }
+
     @Test @MainActor
     func announcementsAreOnByDefaultAndCanBeDisabled() {
         #expect(AppSettings().showsCodexResetAnnouncements)

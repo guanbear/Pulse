@@ -347,9 +347,9 @@ struct FloatingUsagePanelView: View {
             figure: figure,
             second: settings.showsSecondRing ? usage.secondWindow(preferring: pinned) : nil,
             showsRemaining: settings.showsRemaining,
-            showsCodexResetAnnouncement: account.provider == .codex
+            codexResetStatus: account.provider == .codex
                 && settings.showsCodexResetAnnouncements
-                && store.codexResetEvent != nil
+                ? store.codexResetEvent?.status : nil
         )
     }
 

@@ -354,7 +354,10 @@ struct RailEntry: Identifiable, Equatable {
     var showsRemaining: Bool = false
     /// Public Codex reset news, shown beside the percentage when it exists and
     /// as a quiet ring dot only when that label has been hidden.
-    var showsCodexResetAnnouncement = false
+    var codexResetStatus: CodexResetEvent.Status? = nil
+
+    var showsCodexResetAnnouncement: Bool { codexResetStatus != nil }
+    var codexResetColor: Color { codexResetStatus == .confirmed ? .green : .orange }
 
     var id: String { slot.id }
 }
@@ -647,7 +650,7 @@ private struct UsageDockItem: View {
         .overlay(alignment: .topTrailing) {
             if entry.showsCodexResetAnnouncement && !showsPercentage {
                 Circle()
-                    .fill(.orange)
+                    .fill(entry.codexResetColor)
                     .frame(width: 7 * PanelMetrics.scale, height: 7 * PanelMetrics.scale)
                     .overlay { Circle().stroke(.black.opacity(0.8), lineWidth: 1) }
                     .offset(x: 1 * PanelMetrics.scale, y: -1 * PanelMetrics.scale)
@@ -674,7 +677,7 @@ private struct UsageDockItem: View {
 
                 if entry.showsCodexResetAnnouncement {
                     Circle()
-                        .fill(.orange)
+                        .fill(entry.codexResetColor)
                         .frame(width: 6 * PanelMetrics.scale, height: 6 * PanelMetrics.scale)
                         .accessibilityHidden(true)
                 }
