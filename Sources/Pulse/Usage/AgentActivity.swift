@@ -236,7 +236,6 @@ enum AgentActivity {
     private static func zcodeVerdict(in lines: [Data]) -> Verdict {
         var completed: Set<String> = []
         var latest: [String: (wait: Wait, at: Date?)] = [:]
-        var sawLifecycle = false
 
         for line in lines.reversed() {
             guard let record = try? JSONSerialization.jsonObject(with: line) as? [String: Any],
@@ -246,7 +245,6 @@ enum AgentActivity {
 
             switch event {
             case "turn.completed", "turn.failed", "turn.cancelled":
-                sawLifecycle = true
                 completed.insert(turn)
             case "tool.call.started":
                 if completed.contains(turn) { continue }
@@ -256,7 +254,6 @@ enum AgentActivity {
                 if completed.contains(turn) { continue }
                 latest[turn] = latest[turn] ?? (.model, stamp(of: record))
             case "turn.started":
-                sawLifecycle = true
                 guard !completed.contains(turn) else { continue }
                 let state = latest[turn] ?? (.model, stamp(of: record))
                 return .working(state.wait, at: state.at)
@@ -276,7 +273,9 @@ enum AgentActivity {
         {
             return .working(state.wait, at: state.at)
         }
-        return sawLifecycle ? .finished : .unknown
+        // The same log also receives process heartbeat records while ZCode is
+        // idle. Their fresh file timestamp is not evidence of a working turn.
+        return .finished
     }
 
     /// Claude Code records an interrupted turn as a user message saying so,

@@ -144,6 +144,25 @@ struct AgentActivityTests {
         #expect(AgentActivity.verdict(for: file, provider: .glmCoding) == .finished)
     }
 
+    @Test("ZCode background telemetry alone does not mark the GLM ring as working")
+    func zcodeHeartbeatIsIdle() throws {
+        let home = try EditorTestSupport.temporary("zcode-heartbeat")
+        defer { try? FileManager.default.removeItem(at: home) }
+        let config = home.appending(path: ".zcode/cli/config.json")
+        let log = home.appending(path: ".zcode/cli/log/zcode-2026-09-23.jsonl")
+        let stamp = ISO8601DateFormatter().string(from: Self.now)
+
+        try FileManager.default.createDirectory(at: config.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data(#"{"model":{"main":"bigmodel/GLM-5.3"},"provider":{"bigmodel":{"options":{"baseURL":"https://open.bigmodel.cn/api/anthropic"}}}}"#.utf8).write(to: config)
+        try EditorTestSupport.jsonLines([
+            ["event": "zcode_protocol.process.memory_sample", "timestamp": stamp],
+        ], to: log)
+        try FileManager.default.setAttributes([.modificationDate: Self.now], ofItemAtPath: log.path)
+
+        #expect(AgentActivity.verdict(for: log, provider: .glmCoding) == .finished)
+        #expect(AgentActivity.states(for: [.glmCoding], now: Self.now, home: home)[.glmCoding]?.isWorking == false)
+    }
+
     @Test("ZCode activity is attributed only to the configured GLM storefront")
     func zcodeStorefront() throws {
         let home = try EditorTestSupport.temporary("zcode-storefront")
