@@ -63,9 +63,9 @@ struct CodexResetEvent: Decodable, Equatable, Identifiable, Sendable {
         }
     }
 
-    /// Prefer an event whose window is still ahead, then the one most recently
-    /// updated. The API is a correction-capable snapshot, so its array order
-    /// is not treated as a durable contract.
+    /// A recent confirmation outranks an overlapping prediction. Otherwise,
+    /// prefer an active window, then the nearest upcoming one. The API is a
+    /// correction-capable snapshot, so its array order is not a durable contract.
     static func current(in events: [Self], at now: Date = Date()) -> Self? {
         events
             .filter { $0.isDisplayable(at: now) }
@@ -77,12 +77,12 @@ struct CodexResetEvent: Decodable, Equatable, Identifiable, Sendable {
             .first
     }
 
-    /// An active window wins, then the nearest upcoming one. A far-future
-    /// post must not hide tomorrow's announcement merely because its end date
-    /// sorts later.
+    /// A confirmed credit can be a separate API event from an earlier reset
+    /// announcement. Show the newer fact while it remains displayable rather
+    /// than leaving the prediction on screen for the rest of its window.
     private func selectionRank(at now: Date) -> (phase: Int, order: TimeInterval) {
         guard status == .announced else {
-            return (2, (confirmedAt ?? updatedAt).timeIntervalSinceReferenceDate)
+            return (6, (confirmedAt ?? updatedAt).timeIntervalSinceReferenceDate)
         }
         guard let schedule else { return (3, updatedAt.timeIntervalSinceReferenceDate) }
         if now < schedule.from { return (4, -schedule.from.timeIntervalSinceReferenceDate) }

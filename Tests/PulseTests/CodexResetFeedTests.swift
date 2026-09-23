@@ -36,6 +36,17 @@ struct CodexResetFeedTests {
     }
 
     @Test
+    func recentConfirmedCreditOutranksActiveResetAnnouncement() throws {
+        let snapshot = try CodexResetFeed.decode(Data(Self.fixture.utf8))
+        let event = try #require(CodexResetEvent.current(
+            in: snapshot.events,
+            at: Self.date("2026-09-23T09:00:00.000+08:00")
+        ))
+
+        #expect(event.id == "confirmed-credit")
+    }
+
+    @Test
     func staleAnnouncementDoesNotRemainVisible() throws {
         let snapshot = try CodexResetFeed.decode(Data(Self.fixture.utf8))
         let current = CodexResetEvent.current(
@@ -96,6 +107,37 @@ struct CodexResetFeedTests {
           "createdAt": "2026-09-20T10:00:00.000+08:00",
           "updatedAt": "2026-09-20T10:00:00.000+08:00",
           "confirmedAt": "2026-09-20T10:00:00.000+08:00",
+          "schedule": null,
+          "posts": [],
+          "url": "https://example.com/resets"
+        },
+        {
+          "id": "active-reset",
+          "type": "direct_reset",
+          "status": "announced",
+          "title": "Reset announced",
+          "scope": "Pro",
+          "createdAt": "2026-09-22T12:31:32.000+08:00",
+          "updatedAt": "2026-09-22T12:31:32.000+08:00",
+          "confirmedAt": null,
+          "schedule": {
+            "precision": "date",
+            "from": "2026-09-22T15:00:00.000+08:00",
+            "through": "2026-09-23T15:00:00.000+08:00",
+            "label": "September 22-23"
+          },
+          "posts": [],
+          "url": "https://example.com/resets"
+        },
+        {
+          "id": "confirmed-credit",
+          "type": "reset_credit",
+          "status": "confirmed",
+          "title": "Reset credit distributed",
+          "scope": "Pro",
+          "createdAt": "2026-09-20T00:48:38.000+08:00",
+          "updatedAt": "2026-09-23T05:49:16.000+08:00",
+          "confirmedAt": null,
           "schedule": null,
           "posts": [],
           "url": "https://example.com/resets"
