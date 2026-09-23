@@ -2,23 +2,18 @@
   <img src="AppIcon/pulse-icon-1024.png" width="112" alt="Pulse">
 </p>
 
-<h1 align="center">Pulse</h1>
+<h1 align="center">Pulse Codex Reset</h1>
 
 <p align="center">
-  <b>优雅无扰的 macOS 屏幕边缘 AI 编码额度监视器。</b><br>
-  实时掌握 Claude Code、Codex、Cursor、GitHub Copilot、Antigravity、Grok 等多平台的限额与剩余用量。
+  <b>Codex 额度与公开重置消息，同屏查看。</b><br>
+  基于 Pulse 的非官方 fork，把重置卡预告和确认消息放在 Codex 自身报告的用量旁边。
 </p>
 
 <p align="center">
-  <a href="https://github.com/qunqin24/Pulse/releases/latest"><img src="https://img.shields.io/github/v/release/qunqin24/Pulse?color=black" alt="最新版本"></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B%20Sonoma-333333?logo=apple" alt="macOS 14+">
-  <a href="https://github.com/qunqin24/Pulse/actions/workflows/ci.yml"><img src="https://github.com/qunqin24/Pulse/actions/workflows/ci.yml/badge.svg" alt="构建状态"></a>
+  <a href="https://github.com/guanbear/Pulse-codex-reset/actions/workflows/codex-reset-build.yml"><img src="https://github.com/guanbear/Pulse-codex-reset/actions/workflows/codex-reset-build.yml/badge.svg?branch=codex-reset" alt="定制版构建状态"></a>
   <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white" alt="Swift 6.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/许可-Apache%202.0-blue" alt="开源许可"></a>
-  <a href="https://github.com/qunqin24/Pulse/stargazers"><img src="https://img.shields.io/github/stars/qunqin24/Pulse?label=%E6%98%9F%E6%A0%87&color=black" alt="GitHub 星标"></a>
-  <a href="https://github.com/qunqin24/Pulse/releases"><img src="https://img.shields.io/github/downloads/qunqin24/Pulse/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F&color=black" alt="下载量"></a>
-  <a href="https://github.com/qunqin24/Pulse/issues"><img src="https://img.shields.io/github/issues/qunqin24/Pulse?label=%E9%97%AE%E9%A2%98&color=black" alt="待处理问题"></a>
-  <a href="https://github.com/qunqin24/Pulse/commits/main"><img src="https://img.shields.io/github/last-commit/qunqin24/Pulse?label=%E6%9C%80%E8%BF%91%E6%8F%90%E4%BA%A4&color=black" alt="最近提交"></a>
 </p>
 
 <p align="center">
@@ -27,10 +22,24 @@
 
 > [!NOTE]
 > **Pulse Codex Reset** 是
-> [qunqin24/Pulse](https://github.com/qunqin24/Pulse) 的个人定制 fork。
-> 它保留上游产品与许可证，只增加可选的 Codex 重置消息显示，以及维护者自用的
-> Kiro 额度 provider；它不是 Pulse 官方发行版。参见
-> [定制说明与实机截图](PULSE-CODEX-RESET.md)。
+> [qunqin24/Pulse](https://github.com/qunqin24/Pulse) 的个人非官方 fork，
+> 保留原项目署名与 Apache-2.0 许可证。
+
+<p align="center">
+  <img src="Docs/pulse-codex-reset.png" width="720" alt="Codex 每周额度与公开重置卡预告显示在同一张详情卡中">
+</p>
+
+### 这个 fork 增加了什么
+
+- **重置消息与真实用量同屏。** 橙点表示公开预告，绿点表示公开确认；悬停 Codex 圆环可在同一张卡片中查看消息和服务方报告的额度。
+- **可关闭、到期自动消失。** 可在设置中关闭；确认消息展示 24 小时，消息源通常每 15 分钟刷新一次。
+- **明确数据边界。** 消息来自 [AI Hot News](https://aihot.news/codex-reset)，不是 OpenAI 的个人账户数据。公开确认不等于你的账号已收到重置卡，也不会替代 Codex 自身的额度读数。
+
+数据边界与构建说明见[定制说明](PULSE-CODEX-RESET.md)。
+
+---
+
+## 关于 Pulse
 
 <p align="center">
   <img src="Docs/demo.gif" width="340" alt="贴在屏幕边缘的 Pulse 悬浮胶囊">

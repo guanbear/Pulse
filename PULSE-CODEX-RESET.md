@@ -11,31 +11,24 @@ Pulse 官方发行版。
 
 ## Differences from upstream / 与上游的差异
 
-- **Optional Codex reset-news indicator.** A quiet orange dot appears beside
-  Codex usage when a current public reset-card report is available. Hovering
-  Codex keeps usage and the report inside one pointed detail card.
-- **Kiro quota provider.** Reads the signed-in Kiro CLI's native ACP usage
-  method without copying or retaining its credentials.
+- **Optional Codex reset-news indicator.** An orange dot marks a public
+  forecast; a green dot marks a public confirmation. Hovering Codex keeps
+  provider-reported usage and the public report inside one pointed detail card.
 - **Fork-safe updates.** Release bundles do not poll the upstream Sparkle feed,
   because installing an upstream update would silently remove these changes.
-  Updates are downloaded manually from this repository's Releases page.
+  No public fork release has been published yet; the maintainer builds from
+  this repository's CI workflow.
 
-- **可选 Codex 重置消息。** 有当前公开重置卡消息时，Codex 百分比旁显示一个安静的
-  橙色圆点；悬停后，用量和重置消息合并在同一张有明确指向的详情卡中。
-- **Kiro 额度 provider。** 通过已登录 Kiro CLI 的原生 ACP 用量方法读取，不复制或
-  保存凭据。
+- **可选 Codex 重置消息。** 有当前公开重置卡消息时，Codex 百分比旁显示圆点：
+  预告为橙色、确认为绿色；悬停后，用量和重置消息合并在同一张有明确指向的详情卡中。
 - **适合 fork 的更新边界。** 发行包不轮询上游 Sparkle 更新源，避免安装官方更新后
-  静默丢失定制功能；后续版本从本仓库 Releases 页面手动下载。
+  静默丢失定制功能。目前尚无公开的 fork 发行包，维护者通过本仓库 CI 构建。
 
 ## Screenshots / 实机截图
 
 ### Codex usage and reset report / Codex 用量与重置消息
 
 ![Codex reset report merged into one usage card](Docs/pulse-codex-reset.png)
-
-### Kiro quota / Kiro 额度
-
-![Kiro quota in Pulse](Docs/pulse-kiro.png)
 
 ## Data boundary / 数据边界
 

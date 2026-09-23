@@ -2,23 +2,18 @@
   <img src="AppIcon/pulse-icon-1024.png" width="112" alt="Pulse">
 </p>
 
-<h1 align="center">Pulse</h1>
+<h1 align="center">Pulse Codex Reset</h1>
 
 <p align="center">
-  <b>A lightweight, elegant screen-edge monitor for your AI coding allowances.</b><br>
-  Real-time remaining quotas and rate limits for Claude Code, Codex, Cursor, GitHub Copilot, Antigravity, Grok, and more.
+  <b>Codex quota and public reset news, side by side.</b><br>
+  An unofficial fork of Pulse that puts reset-card forecasts and confirmations next to your provider-reported Codex usage.
 </p>
 
 <p align="center">
-  <a href="https://github.com/qunqin24/Pulse/releases/latest"><img src="https://img.shields.io/github/v/release/qunqin24/Pulse?color=black" alt="Latest Release"></a>
   <img src="https://img.shields.io/badge/macOS-14.0%2B%20Sonoma-333333?logo=apple" alt="macOS 14+">
-  <a href="https://github.com/qunqin24/Pulse/actions/workflows/ci.yml"><img src="https://github.com/qunqin24/Pulse/actions/workflows/ci.yml/badge.svg" alt="CI Build"></a>
+  <a href="https://github.com/guanbear/Pulse-codex-reset/actions/workflows/codex-reset-build.yml"><img src="https://github.com/guanbear/Pulse-codex-reset/actions/workflows/codex-reset-build.yml/badge.svg?branch=codex-reset" alt="Fork build"></a>
   <img src="https://img.shields.io/badge/Swift-6.0-F05138?logo=swift&logoColor=white" alt="Swift 6.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue" alt="License"></a>
-  <a href="https://github.com/qunqin24/Pulse/stargazers"><img src="https://img.shields.io/github/stars/qunqin24/Pulse?color=black" alt="GitHub Stars"></a>
-  <a href="https://github.com/qunqin24/Pulse/releases"><img src="https://img.shields.io/github/downloads/qunqin24/Pulse/total?color=black" alt="Downloads"></a>
-  <a href="https://github.com/qunqin24/Pulse/issues"><img src="https://img.shields.io/github/issues/qunqin24/Pulse?color=black" alt="Open Issues"></a>
-  <a href="https://github.com/qunqin24/Pulse/commits/main"><img src="https://img.shields.io/github/last-commit/qunqin24/Pulse?color=black" alt="Last Commit"></a>
 </p>
 
 <p align="center">
@@ -26,11 +21,25 @@
 </p>
 
 > [!NOTE]
-> **Pulse Codex Reset** is a personal customization fork of
-> [qunqin24/Pulse](https://github.com/qunqin24/Pulse). It keeps the upstream
-> product and license intact while adding optional Codex reset-news display
-> and the Kiro quota provider used by this maintainer. It is not an official
-> Pulse release. See [fork details and screenshots](PULSE-CODEX-RESET.md).
+> **Pulse Codex Reset** is a personal, unofficial fork of
+> [qunqin24/Pulse](https://github.com/qunqin24/Pulse). The original project
+> and its Apache-2.0 license remain credited here.
+
+<p align="center">
+  <img src="Docs/pulse-codex-reset.png" width="720" alt="Codex weekly quota and a public reset-card forecast in one Pulse detail card">
+</p>
+
+### What this fork adds
+
+- **Reset news beside real usage.** An orange dot marks a public forecast; a green dot marks a public confirmation. Hover Codex to see the news and provider-reported quota in one card.
+- **Optional and time-limited.** Switch the news off in Settings. Confirmed reports have a 24-hour display window; the feed normally refreshes every 15 minutes.
+- **Clear data boundary.** The news comes from [AI Hot News](https://aihot.news/codex-reset), not OpenAI account data. A public confirmation does not prove that your account received a reset card or replace the Codex quota reading.
+
+See [fork details](PULSE-CODEX-RESET.md) for the data boundary and build notes.
+
+---
+
+## About Pulse
 
 <p align="center">
   <img src="Docs/demo.gif" width="340" alt="Pulse floating rail docked against the screen edge">
