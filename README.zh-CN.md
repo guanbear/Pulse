@@ -88,7 +88,7 @@ Pulse 是一个停靠在屏幕边缘的小巧悬浮监视器。它展示各服�
 - **可脚本化**：`Pulse --json` 输出最近一次读数——套餐、每条限额、重置时间，以及数字有多旧——可接 tmux、sketchybar、Raycast 或 shell 提示符。它只读缓存，所以高频轮询几乎不花代价。
 - **开发者集成**：在设置中导出 Raycast 扩展及可直接配置的 tmux、sketchybar、终端脚本；通过账户链接直达对应设置页。[安装指南](Docs/integrations.md)。
 - **连接诊断**：查看实际读数来源、缓存使用情况、最近检查及回退结果；根据原因直接重连、重新登录或编辑凭据，并可复制不含账户信息和密钥的诊断报告。
-- **本地优先**：Pulse 跑在你自己的 Mac 上，用你自己的登录态。它只发起三类连接，这里列的就是全部——你已在使用的服务商、为 Token 消耗页取公开模型价格的 [models.dev](https://models.dev)，以及检查更新的 GitHub/Sparkle。服务商请求、登录时的令牌交换和 models.dev 会使用「设置 › 通用 › 网络」里选择的代理，Pulse 也会把手动代理传给支持的辅助进程。Sparkle 的更新检查始终跟随 macOS 系统代理设置。
+- **本地优先**：Pulse 跑在你自己的 Mac 上，复用你自己的服务商登录态。这个 fork 会连接已启用的服务商，并在开启对应功能时向 [models.dev](https://models.dev) 获取公开模型价格、向 [AI Hot News](https://aihot.news/codex-reset) 获取公开重置消息。fork 安装包停用上游 Sparkle 更新。服务商请求、登录时的令牌交换和 models.dev 会使用「设置 › 通用 › 网络」里选择的代理，Pulse 也会把手动代理传给支持的辅助进程。
 
 <p align="center">
   <img src="Docs/panel.webp" height="300" alt="详情卡片">
@@ -146,10 +146,11 @@ Pulse 只呈现各服务上报的数字，每个百分比都来自那份回复�
 
 ## 安装与快速上手
 
-1. 前往 [Releases](https://github.com/qunqin24/Pulse/releases/latest) 下载最新的 **`Pulse-x.y.z.dmg`**。
-2. 打开安装镜像，将 **Pulse** 拖拽至「应用程序（Applications）」文件夹即可。
-3. 首次启动先选择要监控的服务，默认都不勾选。点 **「完成」** 后，Pulse 才会读取所选服务的凭据并查询用量。关掉向导会保持未开启监控；也可以在设置里开启任意服务。升级会保留原有选择，对新支持且本机检测到的服务只询问一次。
-4. Pulse 常驻菜单栏。若菜单栏过于拥挤，右键浮动栏（或收起后的细线）并选择 **「设置…」**；也可在 **设置 › 通用 › 快捷键** 中为它分配一个全局快捷键。
+这个 fork 尚未发布公开安装包。[上游 Pulse 的安装包](https://github.com/qunqin24/Pulse/releases)**不包含** Codex 重置消息功能。请按下文从源码构建，或登录 GitHub 下载成功的[定制版 CI 产物](https://github.com/guanbear/Pulse-codex-reset/actions/workflows/codex-reset-build.yml)，依次解压产物与其中的 `Pulse-*.zip`，再将 `Pulse.app` 移入「应用程序」。
+
+1. 从「应用程序」启动这个 fork 的 **Pulse.app**。
+2. 首次启动先选择要监控的服务，默认都不勾选。点 **「完成」** 后，Pulse 才会读取所选服务的凭据并查询用量。关掉向导会保持未开启监控；也可以在设置里开启任意服务。升级会保留原有选择，对新支持且本机检测到的服务只询问一次。
+3. Pulse 常驻菜单栏。若菜单栏过于拥挤，右键浮动栏（或收起后的细线）并选择 **「设置…」**；也可在 **设置 › 通用 › 快捷键** 中为它分配一个全局快捷键。
 
 > [!NOTE]
 > **macOS 首次启动拦截处理**：<br>
@@ -159,14 +160,14 @@ Pulse 只呈现各服务上报的数字，每个百分比都来自那份回复�
 >   ```bash
 >   xattr -cr /Applications/Pulse.app
 >   ```
->   *应用内通过 Sparkle 提供更新。更新后，macOS 可能再次请求浏览器钥匙串访问权限。*
+>   *这个 fork 不会自动安装上游更新；请手动用较新的 fork 构建替换应用。*
 
 ---
 
 ## 隐私与安全性
 
 Pulse 秉持“本地优先”与最小权限设计原则：
-- **无 Pulse 后端**：你的 Mac 用你自己的登录态连接你已在使用的服务商。同时会为 Token 消耗页从 [models.dev](https://models.dev) 获取公开模型价格，并向 GitHub/Sparkle 检查更新。服务商请求、登录时的令牌交换和 models.dev 会使用「设置 › 通用 › 网络」里选择的代理，Pulse 也会把手动代理传给支持的辅助进程。Sparkle 的更新检查始终跟随 macOS 系统代理设置。
+- **无 Pulse 后端**：你的 Mac 用自己的登录态连接已启用的服务商；可选的公开数据来自 [models.dev](https://models.dev) 的模型价格和 [AI Hot News](https://aihot.news/codex-reset) 的重置消息。fork 安装包停用上游 Sparkle 更新。服务商请求、登录时的令牌交换和 models.dev 会使用「设置 › 通用 › 网络」里选择的代理，Pulse 也会把手动代理传给支持的辅助进程。
 - **凭据来源**：在产品本身如此工作时，复用本地开发工具已有的登录态（`~/.claude`、`~/.codex`、Cursor 本地状态等）；部分服务需要在设置中填写密钥或登录。
 - **本地加密存储**：手动输入的 API Key 和 Session 均经过加密保存于 Pulse 应用目录内，权限仅限当前系统用户。
 - **本地用量记录**：Pulse 从会话日志、数据库与导出文件中读取 token 数量，以及标题、工作目录等会话信息。这些记录可能包含对话文本；处理全程在你的 Mac 上完成，记录也留在本机。Pulse 只读取这些记录，仅此而已。
@@ -179,8 +180,8 @@ Pulse 采用原生 Swift 与 SwiftUI 构建。编译当前源码需要完整的 
 
 ```bash
 # 克隆仓库
-git clone https://github.com/qunqin24/Pulse.git
-cd Pulse
+git clone https://github.com/guanbear/Pulse-codex-reset.git
+cd Pulse-codex-reset
 
 # 打包为 macOS App Bundle
 ./Scripts/bundle.sh
@@ -189,7 +190,7 @@ cd Pulse
 open build.noindex/Pulse.app
 ```
 
-`swift run Pulse` 可快速编译运行而不打 Bundle，但通知与应用内更新只有打包后的应用才具备。开发环境配置见 [Docs/build-from-source.md](Docs/build-from-source.md)；发版说明见 [Docs/releasing.md](Docs/releasing.md)。
+`swift run Pulse` 可快速编译运行而不打 Bundle，但通知需要打包后的应用。这个 fork 已停用上游应用内更新。开发环境配置见 [Docs/build-from-source.md](Docs/build-from-source.md)；发版说明见 [Docs/releasing.md](Docs/releasing.md)。
 
 ---
 

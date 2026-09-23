@@ -88,7 +88,7 @@ Pulse is an unobtrusive floating monitor that docks neatly along the edge of you
 - **Scriptable**: `Pulse --json` prints the last readings — plan, every limit, reset times, and how old the figures are — for tmux, sketchybar, Raycast, or a shell prompt. It reads the cache, so polling costs nothing.
 - **Developer Integrations**: Export a Raycast extension and ready-to-configure tmux, sketchybar and shell scripts from Settings. Account links open the right pane directly. [Setup guide](Docs/integrations.md).
 - **Connection Diagnostics**: See the actual reading source, cache use, latest check and fallback outcomes. Contextual actions help reconnect, sign in again or fix credentials; copy a diagnostic report without account details or secrets.
-- **Privacy First**: Pulse runs on your Mac under your own provider logins. It makes three kinds of connection and they are all listed here: the providers you already use, [models.dev](https://models.dev) for public model prices in the token-spend pane, and GitHub/Sparkle for app updates. Provider requests, sign-in exchanges and models.dev use the proxy chosen under Settings › General › Network; supported helper processes receive the same manual proxy. Sparkle update checks always follow macOS system proxy settings.
+- **Privacy First**: Pulse runs on your Mac under your own provider logins. This fork contacts enabled providers, [models.dev](https://models.dev) for optional public model prices, and [AI Hot News](https://aihot.news/codex-reset) for optional public reset news. Fork bundles disable upstream Sparkle updates. Provider requests, sign-in exchanges and models.dev use the proxy chosen under Settings › General › Network; supported helper processes receive the same manual proxy.
 
 <p align="center">
   <img src="Docs/panel.webp" height="300" alt="Detailed usage card beside rail">
@@ -146,10 +146,11 @@ Pulse shows the figures each service reports, and every percentage comes from th
 
 ## Installation
 
-1. Download the latest **`Pulse-x.y.z.dmg`** from [Releases](https://github.com/qunqin24/Pulse/releases/latest).
-2. Open the disk image and drag **Pulse** into your `Applications` folder.
-3. On first launch, choose the services to monitor. All start unchecked; Pulse reads their credentials and checks usage only after you click **Done**. Closing the chooser leaves monitoring off; you can also enable a service in Settings. Upgrades keep your choices and ask once about newly supported services detected on your Mac.
-4. Pulse lives in the menu bar. If your menu bar is crowded, right-click the floating rail — or the collapsed sliver — and choose **Settings…**; you can also assign a global shortcut for it under **Settings › General › Shortcuts**.
+This fork has no public release yet. The [upstream Pulse releases](https://github.com/qunqin24/Pulse/releases) do **not** include the Codex reset-news feature. To use this fork, build it from source below or sign in to GitHub and download a successful [fork build artifact](https://github.com/guanbear/Pulse-codex-reset/actions/workflows/codex-reset-build.yml). Extract the artifact, then extract `Pulse-*.zip` and move `Pulse.app` into `Applications`.
+
+1. Launch the fork's **Pulse.app** from `Applications`.
+2. On first launch, choose the services to monitor. All start unchecked; Pulse reads their credentials and checks usage only after you click **Done**. Closing the chooser leaves monitoring off; you can also enable a service in Settings. Upgrades keep your choices and ask once about newly supported services detected on your Mac.
+3. Pulse lives in the menu bar. If your menu bar is crowded, right-click the floating rail — or the collapsed sliver — and choose **Settings…**; you can also assign a global shortcut for it under **Settings › General › Shortcuts**.
 
 > [!NOTE]
 > **macOS Gatekeeper First Launch**:<br>
@@ -159,14 +160,14 @@ Pulse shows the figures each service reports, and every percentage comes from th
 >   ```bash
 >   xattr -cr /Applications/Pulse.app
 >   ```
->   *Updates are offered in-app through Sparkle. macOS may request browser keychain access again after an update.*
+>   *This fork does not install upstream updates automatically; replace the app manually with a newer fork build.*
 
 ---
 
 ## Privacy & Security
 
 Pulse is designed with strict local-first security principles:
-- **No Pulse backend**: Your Mac talks to the providers you already use, under your own logins. It also fetches public model prices from [models.dev](https://models.dev) for the token-spend pane and checks GitHub/Sparkle for app updates. Provider requests, sign-in exchanges and models.dev use the proxy chosen under Settings › General › Network; supported helper processes receive the same manual proxy. Sparkle update checks always follow macOS system proxy settings.
+- **No Pulse backend**: Your Mac talks to the providers you enable, under your own logins. Optional public data comes from [models.dev](https://models.dev) for model prices and [AI Hot News](https://aihot.news/codex-reset) for reset reports. Fork bundles disable upstream Sparkle updates. Provider requests, sign-in exchanges and models.dev use the proxy chosen under Settings › General › Network; supported helper processes receive the same manual proxy.
 - **Local Credentials**: Reads credentials already stored locally by your development tools (`~/.claude`, `~/.codex`, Cursor storage, etc.) where that is how the product works; some providers need a key or sign-in you enter in Settings.
 - **Encrypted Local Storage**: Manually entered API keys and session tokens are encrypted and saved strictly in Pulse's local application directory with owner-only permissions.
 - **Local Usage Records**: Pulse reads transcripts, databases and exports to obtain token counts and session metadata such as titles and working directories. These records may contain conversation text; processing stays on your Mac and the records stay with it. Pulse reads those records and nothing else.
@@ -179,8 +180,8 @@ Pulse is built with native Swift and SwiftUI. Building the current sources needs
 
 ```bash
 # Clone the repository
-git clone https://github.com/qunqin24/Pulse.git
-cd Pulse
+    git clone https://github.com/guanbear/Pulse-codex-reset.git
+    cd Pulse-codex-reset
 
 # Build the app bundle
 ./Scripts/bundle.sh
@@ -189,7 +190,7 @@ cd Pulse
 open build.noindex/Pulse.app
 ```
 
-`swift run Pulse` is a quick way to build and run without a bundle, but notifications and in-app updates only work from the bundled app. See [Docs/build-from-source.md](Docs/build-from-source.md) for toolchain setup. Shipping a release: [Docs/releasing.md](Docs/releasing.md).
+`swift run Pulse` is a quick way to build and run without a bundle, but notifications require the bundled app. The fork disables upstream in-app updates. See [Docs/build-from-source.md](Docs/build-from-source.md) for toolchain setup. Shipping a release: [Docs/releasing.md](Docs/releasing.md).
 
 ---
 
