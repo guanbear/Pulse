@@ -82,6 +82,19 @@ struct CodexResetFeedTests {
     }
 
     @Test
+    func scheduledAnnouncementExpiresWhenItsWindowEnds() throws {
+        let snapshot = try CodexResetFeed.decode(Data(Self.overlappingConfirmationFixture.utf8))
+        let announcement = try #require(snapshot.events.first { $0.id == "active-reset" })
+
+        #expect(announcement.isDisplayable(at: Self.date("2026-09-23T15:00:00.000+08:00")))
+        #expect(!announcement.isDisplayable(at: Self.date("2026-09-24T09:00:00.000+08:00")))
+        #expect(CodexResetEvent.current(
+            in: snapshot.events,
+            at: Self.date("2026-09-24T09:00:00.000+08:00")
+        ) == nil)
+    }
+
+    @Test
     func recentConfirmationIsTemporary() throws {
         let snapshot = try CodexResetFeed.decode(Data(Self.fixture.utf8))
         let event = try #require(snapshot.events.first { $0.id == "confirmed" })

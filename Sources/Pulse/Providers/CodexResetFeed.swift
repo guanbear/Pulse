@@ -51,14 +51,15 @@ struct CodexResetEvent: Decodable, Equatable, Identifiable, Sendable {
     }
 
     /// Old unconfirmed announcements must not remain on the ring for ever.
-    /// Scheduled ones remain useful through the announced window and for one
-    /// day while confirmation can arrive; schedule-less news gets 48 hours.
+    /// Scheduled ones remain useful only through the announced window;
+    /// schedule-less news gets 48 hours. A confirmation may be a separate
+    /// event, but an expired prediction must not reappear after it fades.
     func isDisplayable(at now: Date) -> Bool {
         switch status {
         case .confirmed:
             return now.timeIntervalSince(confirmedAt ?? updatedAt) <= 24 * 60 * 60
         case .announced:
-            if let schedule { return now <= schedule.through.addingTimeInterval(24 * 60 * 60) }
+            if let schedule { return now <= schedule.through }
             return now.timeIntervalSince(updatedAt) <= 48 * 60 * 60
         }
     }

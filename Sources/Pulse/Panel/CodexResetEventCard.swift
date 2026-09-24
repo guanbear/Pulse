@@ -50,14 +50,18 @@ struct CodexResetEventSection: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
-                HStack(spacing: 5 * PanelMetrics.scale) {
-                    Image(systemName: "link")
-                    Text(localized: "AI Hot News · original post")
+                Link(destination: event.posts.first?.url ?? event.url) {
+                    HStack(spacing: 5 * PanelMetrics.scale) {
+                        Image(systemName: "link")
+                        Text(localized: "AI Hot News · original post")
+                    }
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 .font(.system(size: 10.5 * PanelMetrics.scale, weight: .medium))
                 .foregroundStyle(.secondary)
             }
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .contain)
             .accessibilityLabel(String.localized("Codex reset announcement"))
         }
     }
